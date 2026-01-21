@@ -10,7 +10,7 @@ namespace Execution
 {
     public class ReportGenerator
     {
-        public static void GenerateReport(List<TestCaseResult> testResults, string outputPath)
+        public static void GenerateReport(List<TestCaseResult> testResults)
         {
             var html = new StringBuilder();
 

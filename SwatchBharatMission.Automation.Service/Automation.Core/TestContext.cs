@@ -8,15 +8,32 @@ using System.Threading.Tasks;
 namespace Automation.Core
 {
 
-    public class TestContext
+    public sealed class TestContext : IAsyncDisposable
     {
-        public IPage Page { get; }
-        public IBrowser Browser { get; }
+        private readonly IPlaywright _playwright;
 
-        public TestContext(IBrowser browser, IPage page)
+        public IBrowser Browser { get; }
+        public IPage Page { get; }
+
+        public TestContext(
+            IPlaywright playwright,
+            IBrowser browser,
+            IPage page)
         {
+            _playwright = playwright;
             Browser = browser;
             Page = page;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (Page != null)
+                await Page.CloseAsync();
+
+            if (Browser != null)
+                await Browser.CloseAsync();
+
+            _playwright?.Dispose();
         }
     }
 }

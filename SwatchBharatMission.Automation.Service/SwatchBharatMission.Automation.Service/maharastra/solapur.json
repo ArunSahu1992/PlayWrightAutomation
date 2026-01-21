@@ -1,0 +1,24 @@
+{
+  "LoginEndpoint": "https://api.districtdashboard.in/api/account/login",
+  "UserName": "auto",
+  "Password": "Auto#2026",
+  "State": "Maharashtra",
+  "TenantCode": "solapur",
+  "TestCases": {
+    "TC_001_UploadCityDataToServer_MR_05": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/swatchbharat/mr5"
+    },
+    "TC_002_UploadCityDataToServer_MR_3A_SWM": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/swatchbharat/mr3a"
+    },
+    "TC_003_UploadCityDataToServer_MR_13A": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/swatchbharat/mr13a"
+    },
+    "TC_004_UploadCityDataToServer_MR_3C": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/swatchbharat/mr3c"
+    },
+    "TC_005_UploadCityDataToServer_MR_166B": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/swatchbharat/mr166b"
+    }
+  }
+}

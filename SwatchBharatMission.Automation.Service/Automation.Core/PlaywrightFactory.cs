@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace Automation.Core
 {
-    public static class PlaywrightFactory
+    public static class PlaywrightFactory 
     {
-        public static async Task<TestContext> CreateAsync()
+        public static async Task<TestContext> CreateAsync(bool headLess)
         {
             var playwright = await Playwright.CreateAsync();
             var browser = await playwright.Chromium.LaunchAsync(
-                new BrowserTypeLaunchOptions { Headless = true });
+                new BrowserTypeLaunchOptions { Headless = headLess });
 
             var page = await browser.NewPageAsync();
-            return new TestContext(browser, page);
+            return new TestContext(playwright,browser, page);
         }
     }
 }

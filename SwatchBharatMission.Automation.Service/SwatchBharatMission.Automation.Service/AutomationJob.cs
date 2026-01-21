@@ -8,11 +8,9 @@ namespace SwatchBharatMission.Automation.Service
     public class AutomationJob : IJob
     {
         private readonly TestExecutor _runner;
-        private readonly IOptions<AutomationSettings> _options;
-        public AutomationJob(TestExecutor runner, IOptions<AutomationSettings> options)
+        public AutomationJob(TestExecutor runner)
         {
             _runner = runner;
-            _options = options;
         }
 
         public async Task Execute(IJobExecutionContext context)
