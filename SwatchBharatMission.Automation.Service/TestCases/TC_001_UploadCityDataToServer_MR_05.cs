@@ -9,13 +9,15 @@ namespace TestCases
 {
     public class TC_001_UploadCityDataToServer_MR_05 : ITestCase
     {
-        public string TestCaseId => "TC_001";
+        public string TestCaseId => "TC_001_UploadCityDataToServer_MR_05";
 
         public async Task ExecuteAsync(UploadAutomationSettings uploadAutomationSettings, AutomationSettings automationSettings, ILogger logger)
         {
             var filesToUpload = new List<string>();
             await using var context = await PlaywrightFactory.CreateAsync(automationSettings.Headless);
             var page = context.Page;
+            page.SetDefaultTimeout(60000);           // 60 seconds
+            page.SetDefaultNavigationTimeout(60000);
             logger.LogInformation($"TestCase {TestCaseId} Started for : {uploadAutomationSettings.TenantCode} ");
 
             try
@@ -26,18 +28,27 @@ namespace TestCases
 
                 // Navigate
                 await page.GotoAsync(automationSettings.BaseUrl);
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("Page Loaded");
+
                 await page.ClickAsync("#RptrOdfPlusReports_ctl01_lnkbtn_PageLinkHeader");
-                await page.Locator($"a:text-matches('{state}', 'i')")
-                .WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("State Page Loaded.");
 
                 await page.Locator($"a:text-matches('{state}', 'i')").ClickAsync();
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("City Page Loaded.");
+
                 await page.ClickAsync($"a:has-text('{city}')");
 
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("Sub City Page loaded");
                 // Get block count (retry once if not loaded)
                 int blockCount = await page.Locator("a[id$='_lnk_BlockName']").CountAsync();
                 if (blockCount == 0)
                 {
-                    await Task.Delay(2000);
+                    logger.LogInformation("Waiting for delay 5000ms.");
+                    await Task.Delay(5000);
                     blockCount = await page.Locator("a[id$='_lnk_BlockName']").CountAsync();
                 }
 
@@ -47,6 +58,7 @@ namespace TestCases
 
                     for (int i = 0; i < blockCount; i++)
                     {
+                        await page.WaitForLoadStateAsync(LoadState.Load);
                         var block = page.Locator("a[id$='_lnk_BlockName']").Nth(i);
                         string blockName = (await block.InnerTextAsync()).Trim();
 
@@ -54,6 +66,7 @@ namespace TestCases
 
                         await block.ClickAsync();
 
+                        await page.WaitForLoadStateAsync(LoadState.Load);
                         var download = await page.RunAndWaitForDownloadAsync(async () =>
                         {
                             await page.Locator("#ctl00_ContentPlaceHolder1_btnExcel").ClickAsync();
@@ -106,10 +119,11 @@ namespace TestCases
             catch (Exception ex)
             {
                 logger.LogInformation(ex.Message);
+                throw ex;
             }
             finally
             {
-              
+
             }
         }
         private static string SanitizeFileName(string name)

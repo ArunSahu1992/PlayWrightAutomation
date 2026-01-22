@@ -10,7 +10,7 @@ namespace TestCases
 {
     public class TC_002_UploadCityDataToServer_MR_3A_SWM : ITestCase
     {
-        public string TestCaseId => "TC_002";
+        public string TestCaseId => "TC_002_UploadCityDataToServer_MR_3A_SWM";
 
         public async Task ExecuteAsync(UploadAutomationSettings uploadAutomationSettings, AutomationSettings automationSettings, ILogger logger)
         {
@@ -20,6 +20,8 @@ namespace TestCases
             logger.LogInformation($"TestCase {TestCaseId} Started for : {uploadAutomationSettings.TenantCode} ");
 
             var page = context.Page;
+            page.SetDefaultTimeout(60000);           // 60 seconds
+            page.SetDefaultNavigationTimeout(60000);
             var categories = new[] {
                 "Grey Water Management",
                 "Solid Waste Management"
@@ -33,8 +35,15 @@ namespace TestCases
 
                 // Navigate
                 await page.GotoAsync(automationSettings.BaseUrl);
-                await page.ClickAsync("#RptrPhaseIIMISreport_ctl01_lnkbtn_PageLinkHeader");
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("Page Loaded");
 
+                await page.ClickAsync("#RptrPhaseIIMISreport_ctl01_lnkbtn_PageLinkHeader");
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("State Page Loaded.");
+
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("Page Loaded");
 
                 foreach (var category in categories)
                 {
@@ -51,11 +60,18 @@ namespace TestCases
                         );
                     });
 
-                    await Task.Delay(10000);
+                    await page.WaitForLoadStateAsync(LoadState.Load);
+                    logger.LogInformation("State Page Loaded.");
+
                     // Click state & city
                     await page.ClickAsync($"a:text-matches('{state}', 'i')");
+
+                    await page.WaitForLoadStateAsync(LoadState.Load);
+                    logger.LogInformation("City Page Loaded.");
                     await page.ClickAsync($"a:text-matches('{city}', 'i')");
 
+                    await page.WaitForLoadStateAsync(LoadState.Load);
+                    logger.LogInformation("Sub City Page loaded");
                     int blockCount = 0;
                     // Get block count (retry once)
                     if (category == "Grey Water Management")
@@ -66,6 +82,7 @@ namespace TestCases
                     if (blockCount == 0)
                     {
                         await Task.Delay(5000);
+                        logger.LogInformation("Waiting for delay 5000ms.");
                         // Get block count (retry once)
                         if (category == "Grey Water Management")
                             blockCount = await page.Locator("a[id$='lbl_blknameGWM']").CountAsync();
@@ -77,6 +94,7 @@ namespace TestCases
 
                     for (int i = 0; i < blockCount; i++)
                     {
+                        await page.WaitForLoadStateAsync(LoadState.Load);
                         ILocator block;
                         if (category == "Grey Water Management")
                             block = page.Locator("a[id$='lbl_blknameGWM']").Nth(i);
@@ -90,6 +108,7 @@ namespace TestCases
 
                         await block.ClickAsync();
 
+                        await page.WaitForLoadStateAsync(LoadState.Load);
                         var download = await page.RunAndWaitForDownloadAsync(async () =>
                         {
                             await page.Locator("#ctl00_ContentPlaceHolder1_btnExcel").ClickAsync();
@@ -158,6 +177,7 @@ namespace TestCases
             catch (Exception ex)
             {
                 logger.LogInformation(ex.Message);
+                throw ex;
             }
             finally
             {

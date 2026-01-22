@@ -77,7 +77,7 @@ namespace Execution
                                         {
                                             result.IsPassed = false;
                                             result.Message = "Failed";
-                                            _logger.LogInformation($"Exception Occurred for TestCase {testcase.Key} " + ex.StackTrace);
+                                            _logger.LogInformation($"Exception Occurred for TestCase {testcase.Key} " + ex.Message);
                                         }
                                         finally
                                         {

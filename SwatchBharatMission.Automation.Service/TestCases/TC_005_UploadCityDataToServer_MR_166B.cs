@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using TestCases.common;
 using System.Net;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace TestCases
 {
     public class TC_005_UploadCityDataToServer_MR_166B : ITestCase
@@ -16,6 +17,8 @@ namespace TestCases
             var filesToUpload = new List<string>();
             await using var context = await PlaywrightFactory.CreateAsync(automationSettings.Headless);
             var page = context.Page;
+            page.SetDefaultTimeout(60000);           // 60 seconds
+            page.SetDefaultNavigationTimeout(60000);
             logger.LogInformation($"TestCase {TestCaseId} Started for : {uploadAutomationSettings.TenantCode} ");
 
             try
@@ -26,18 +29,28 @@ namespace TestCases
 
                 // Navigate
                 await page.GotoAsync(automationSettings.BaseUrl);
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("Page Loaded");
+
                 await page.ClickAsync("#RptrPhaseIIMISOtherReport_Households_CSC_ctl04_lnkbtn_PageLinkHeader");
-                await page.Locator($"a:text-matches('{state}', 'i')")
-                .WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("State Page Loaded.");
 
                 await page.Locator($"a:text-matches('{state}', 'i')").ClickAsync();
+                await page.WaitForLoadStateAsync(LoadState.Load);
+
+                logger.LogInformation("City Page Loaded.");
                 await page.ClickAsync($"a:has-text('{city}')");
 
+                await page.WaitForLoadStateAsync(LoadState.Load);
+
+                logger.LogInformation("Sub City Page loaded");
                 // Get block count (retry once if not loaded)
                 int blockCount = await page.Locator("a[id$='_lnkBlockName']").CountAsync();
                 if (blockCount == 0)
                 {
-                    await Task.Delay(2000);
+                    logger.LogInformation("Waiting for delay 5000ms.");
+                    await Task.Delay(5000);
                     blockCount = await page.Locator("a[id$='_lnkBlockName']").CountAsync();
                 }
 
@@ -47,6 +60,7 @@ namespace TestCases
 
                     for (int i = 0; i < blockCount; i++)
                     {
+                        await page.WaitForLoadStateAsync(LoadState.Load);
                         var block = page.Locator("a[id$='_lnkBlockName']").Nth(i);
                         string blockName = (await block.InnerTextAsync()).Trim();
 
@@ -54,6 +68,7 @@ namespace TestCases
 
                         await block.ClickAsync();
 
+                        await page.WaitForLoadStateAsync(LoadState.Load);
                         var download = await page.RunAndWaitForDownloadAsync(async () =>
                         {
                             await page.Locator("#ctl00_ContentPlaceHolder1_btnExcel").ClickAsync();
@@ -72,9 +87,10 @@ namespace TestCases
                         filesToUpload.Add(filePath);
 
                         // Go back
-                        await page.ClickAsync("#ctl00_ContentPlaceHolder1_lnk_Back");
-                    }
 
+                        await page.ClickAsync("#ctl00_ContentPlaceHolder1_lnk_Back");
+
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -38,6 +38,10 @@ namespace TestCases.common
                     }
                     request.Content = content;
                     var response = await _httpClient.SendAsync(request);
+
+                    if (response.StatusCode != HttpStatusCode.OK)
+                        throw new Exception("Upload Service failed");
+
                     return (await response.Content.ReadAsStringAsync(), response.StatusCode);
                 }
             );

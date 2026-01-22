@@ -3,17 +3,25 @@ using Configuration;
 using SwatchBharatMission.Automation.Service;
 using Execution;
 using Serilog;
-using Automation.Core;
+
+
+#if !DEBUG
+    Environment.SetEnvironmentVariable("PLAYWRIGHT_BROWSERS_PATH", "0");
+#endif
+
+var logFolder = Path.Combine(AppContext.BaseDirectory, "logs");
+Directory.CreateDirectory(logFolder);
+
+var logFile = Path.Combine(logFolder, "playwright-.log");
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
-    .Enrich.FromLogContext()
-    .WriteTo.Console(
+    .Enrich.FromLogContext().WriteTo.Console(
         outputTemplate:
         "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
     )
     .WriteTo.File(
-        path: "logs/playwright-.log",
+        path: logFile,
         rollingInterval: RollingInterval.Day,
         retainedFileCountLimit: 14,
         shared: true,
@@ -23,28 +31,17 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
     IHost host = Host.CreateDefaultBuilder(args)
+    //.UseSystemd()
     .UseSerilog() .
     ConfigureAppConfiguration((hostContext, config) =>
     {
-        string sourceRoot = Path.GetFullPath(
-        Path.Combine(AppContext.BaseDirectory, "..", "..", ".."));
-
-        string folderPath = Path.Combine(sourceRoot, "maharastra");
-
-        if (Directory.Exists(folderPath))
-        {
-            foreach (var file in Directory.GetFiles(folderPath, "*.json"))
-            {
-                config.AddJsonFile(file, optional: false, reloadOnChange: true);
-            }
-        }
     })
 
     .ConfigureServices((hostContext, services) =>
     {
 
         string sourceRoot = Path.GetFullPath(
-        Path.Combine(AppContext.BaseDirectory, "..", "..", ".."));
+        Path.Combine(AppContext.BaseDirectory));
 
         string folderPath = Path.Combine(sourceRoot, "maharastra");
 

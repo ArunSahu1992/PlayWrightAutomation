@@ -16,6 +16,8 @@ namespace TestCases
             var filesToUpload = new List<string>();
             await using var context = await PlaywrightFactory.CreateAsync(automationSettings.Headless);
             var page = context.Page;
+            page.SetDefaultTimeout(60000);           // 60 seconds
+            page.SetDefaultNavigationTimeout(60000);
             logger.LogInformation($"TestCase {TestCaseId} Started for : {uploadAutomationSettings.TenantCode} ");
 
             try
@@ -26,18 +28,30 @@ namespace TestCases
 
                 // Navigate
                 await page.GotoAsync(automationSettings.BaseUrl);
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("Page Loaded");
+
                 await page.ClickAsync("#RptrPhaseIIMISreport_ctl02_lnkbtn_PageLinkHeader");
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("State Page Loaded.");
+
                 await page.Locator($"a:text-matches('{state}', 'i')")
                 .WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible });
 
                 await page.Locator($"a:text-matches('{state}', 'i')").ClickAsync();
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("City Page Loaded.");
+
                 await page.ClickAsync($"a:has-text('{city}')");
+                await page.WaitForLoadStateAsync(LoadState.Load);
+                logger.LogInformation("Sub City Page loaded");
 
                 // Get block count (retry once if not loaded)
                 int blockCount = await page.Locator("a[id$='_lnk_Blockname']").CountAsync();
                 if (blockCount == 0)
                 {
-                    await Task.Delay(2000);
+                    logger.LogInformation("Waiting for delay 5000ms.");
+                    await Task.Delay(5000);
                     blockCount = await page.Locator("a[id$='_lnk_Blockname']").CountAsync();
                 }
 
@@ -47,12 +61,14 @@ namespace TestCases
 
                     for (int i = 0; i < blockCount; i++)
                     {
+                        await page.WaitForLoadStateAsync(LoadState.Load);
                         var block = page.Locator("a[id$='_lnk_Blockname']").Nth(i);
                         string blockName = (await block.InnerTextAsync()).Trim();
 
                         logger.LogInformation($"Clicking block: {blockName}");
 
                         await block.ClickAsync();
+                        await page.WaitForLoadStateAsync(LoadState.Load);
 
                         var download = await page.RunAndWaitForDownloadAsync(async () =>
                         {
@@ -106,6 +122,7 @@ namespace TestCases
             catch (Exception ex)
             {
                 logger.LogInformation(ex.Message);
+                throw ex;
             }
             finally
             {
