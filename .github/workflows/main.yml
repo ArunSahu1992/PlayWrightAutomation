@@ -1,33 +1,30 @@
-name: Playwright Manual Run (Linux Runner)
+name: Playwright Worker (Ubuntu)
 
 on:
-  workflow_dispatch:   # 👈 MANUAL trigger only
+  workflow_dispatch:
 
 jobs:
-  run-playwright:
-    runs-on: ubuntu-latest   # your Linux runner
+  run-worker:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
 
-      - name: Restore
-        run: dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
+    - name: Restore
+      run: dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
-      - name: Build (Linux generates playwright.sh)
-        run: dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj --configuration Release
+    - name: Install Playwright CLI
+      run: dotnet tool install --global Microsoft.Playwright.CLI
 
-      - name: Install Playwright browsers
-        run: |
-              cd SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
-              chmod +x bin/Release/net8.0/playwright.sh
-              bin/Release/net8.0/playwright.sh install --with-deps
+    - name: Install Playwright browsers
+      run: playwright install --with-deps
 
-      - name: Run Playwright Automation
-        run: |
-          dotnet run --configuration Release
+    - name: Build Worker
+      run: dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj --configuration Release
+
+    - name: Run Worker
+      run: dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
