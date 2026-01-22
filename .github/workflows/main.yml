@@ -14,17 +14,23 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Restore
-      run: dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
+    - name: Add dotnet tools to PATH
+      run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
     - name: Install Playwright CLI
       run: dotnet tool install --global Microsoft.Playwright.CLI
-     
+
+    - name: Verify Playwright CLI
+      run: dotnet playwright --version
+
+    - name: Restore
+      run: dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
+
     - name: Build
       run: dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj --configuration Release
 
     - name: Install Playwright browsers
-      run: dotnet playwright install --with-deps --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj 
-     
+      run: dotnet playwright install --with-deps --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
+
     - name: Run Worker
       run: dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
