@@ -16,15 +16,15 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Restore & Build
-        working-directory: SwatchBharatMission.Automation.Service
-        run: |
-          dotnet restore
-          dotnet build --configuration Release
+      - name: Restore
+        run: dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
-      - name: Install Playwright Browsers
-        working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
+      - name: Build (Linux generates playwright.sh)
+        run: dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj --configuration Release
+
+      - name: Install Playwright browsers
         run: |
+              cd SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
               chmod +x bin/Release/net8.0/playwright.sh
               bin/Release/net8.0/playwright.sh install --with-deps
 
