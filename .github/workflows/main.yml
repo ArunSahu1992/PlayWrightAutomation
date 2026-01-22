@@ -1,0 +1,30 @@
+name: Playwright Manual Run (Linux Runner)
+
+on:
+  workflow_dispatch:   # 👈 MANUAL trigger only
+
+jobs:
+  run-playwright:
+    runs-on: ubuntu-latest   # your Linux runner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore & Build
+        run: |
+          dotnet restore
+          dotnet build --configuration Release
+
+      - name: Install Playwright Browsers
+        run: |
+          pwsh bin/Release/net8.0/playwright.ps1 install --with-deps
+
+      - name: Run Playwright Automation
+        run: |
+          dotnet run --configuration Release
