@@ -1,4 +1,4 @@
-name: Playwright Worker (Ubuntu)
+name: Playwright Worker Ubuntu
 
 on:
   workflow_dispatch:
@@ -17,13 +17,10 @@ jobs:
     - name: Restore
       run: dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
-    - name: Install Playwright CLI
-      run: dotnet tool install --global Microsoft.Playwright.CLI
+    - name: Install Playwright browsers (CORRECT WAY)
+      run: dotnet playwright install --with-deps --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
-    - name: Install Playwright browsers (IMPORTANT)
-      run: playwright install --with-deps -p SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
-
-    - name: Build Worker
+    - name: Build
       run: dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj --configuration Release
 
     - name: Run Worker
