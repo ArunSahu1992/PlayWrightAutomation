@@ -25,8 +25,7 @@ jobs:
 
       
     - name: Install Playwright browsers (CORRECT WAY)
-      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
-      run: playwright install --with-deps  
+      run: playwright install --with-deps  --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
    
     - name: Run Worker
