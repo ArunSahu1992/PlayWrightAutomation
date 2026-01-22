@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace SwatchBharatMission.Automation.Service
 {
-    public class AutomationJob : IJob
+    public class AutomationJob
     {
         private readonly TestExecutor _runner;
         public AutomationJob(TestExecutor runner)
@@ -13,7 +13,7 @@ namespace SwatchBharatMission.Automation.Service
             _runner = runner;
         }
 
-        public async Task Execute(IJobExecutionContext context)
+        public async Task Execute()
         {
             await _runner.ExecuteAsync();
         }

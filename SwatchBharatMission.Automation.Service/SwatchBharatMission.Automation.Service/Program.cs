@@ -52,23 +52,13 @@ Log.Logger = new LoggerConfiguration()
       _ => new ConfigurationRegistry(folderPath));
 
         // Quartz
-        services.AddQuartz(q =>
-        {
-            q.UseMicrosoftDependencyInjectionJobFactory();
+   
 
-            var jobKey = new JobKey("AutomationJob");
-            q.AddJob<AutomationJob>(opts => opts.WithIdentity(jobKey));
-
-            q.AddTrigger(opts => opts
-                .ForJob(jobKey)
-                .WithCronSchedule(
-                    hostContext.Configuration["AutomationSettings:Cron"] ?? "*/5 * * * *"));
-        });
-
-        services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
         // Automation
         services.AddSingleton<TestExecutor>();
+        services.AddHostedService<Worker>();
+
     })
     .Build();
 
