@@ -23,8 +23,10 @@ jobs:
           dotnet build --configuration Release
 
       - name: Install Playwright Browsers
+        working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
         run: |
-          pwsh bin/Release/net8.0/playwright.ps1 install --with-deps
+              chmod +x bin/Release/net8.0/playwright.sh
+              bin/Release/net8.0/playwright.sh install --with-deps
 
       - name: Run Playwright Automation
         run: |
