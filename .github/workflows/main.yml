@@ -17,6 +17,9 @@ jobs:
     - name: Restore
       run: dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
+    - name: Install Playwright CLI
+      run: dotnet tool install --global Microsoft.Playwright.CLI
+      
     - name: Install Playwright browsers (CORRECT WAY)
       working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
       run: playwright install --with-deps  
