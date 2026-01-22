@@ -20,8 +20,8 @@ jobs:
     - name: Install Playwright CLI
       run: dotnet tool install --global Microsoft.Playwright.CLI
 
-    - name: Install Playwright browsers
-      run: playwright install --with-deps
+    - name: Install Playwright browsers (IMPORTANT)
+      run: playwright install --with-deps -p SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
     - name: Build Worker
       run: dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj --configuration Release
