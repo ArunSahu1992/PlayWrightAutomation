@@ -23,10 +23,8 @@ jobs:
     - name: Build
       run: dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj --configuration Release
 
-      
-    - name: Install Playwright browsers (CORRECT WAY)
-      run: playwright install --with-deps  --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
-
-   
+    - name: Install Playwright browsers
+      run: dotnet playwright install --with-deps --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj 
+     
     - name: Run Worker
       run: dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
