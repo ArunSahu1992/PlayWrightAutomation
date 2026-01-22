@@ -26,12 +26,16 @@ jobs:
     - name: Build
       run: dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj --configuration Release
 
-    - name: Set Playwright Browser Path
-      run: echo "PLAYWRIGHT_BROWSERS_PATH=./bin/Release/net8.0/.playwright" >> $GITHUB_ENV
+    - name: Set browser path absolute
+      run: echo "PLAYWRIGHT_BROWSERS_PATH=$(pwd)/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright" >> $GITHUB_ENV
 
     - name: Install Playwright browsers
       working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
       run:  playwright install --with-deps
+
+    - name: Check browser folder
+      run: |
+        ls -la SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright/package/.local-browsers
 
     - name: Print build folder
       run: |
