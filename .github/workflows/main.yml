@@ -78,3 +78,5 @@ jobs:
     
         echo "Listing local browsers:"
         ls -la SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright/package/.local-browsers || true
+    - name: Run Worker
+      run: dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
