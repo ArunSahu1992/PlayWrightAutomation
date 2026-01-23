@@ -5,9 +5,7 @@ using Execution;
 using Serilog;
 
 
-#if !DEBUG
-    Environment.SetEnvironmentVariable("PLAYWRIGHT_BROWSERS_PATH", "0");
-#endif
+
 
 var logFolder = Path.Combine(AppContext.BaseDirectory, "logs");
 Directory.CreateDirectory(logFolder);
