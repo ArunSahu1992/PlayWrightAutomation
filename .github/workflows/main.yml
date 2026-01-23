@@ -23,15 +23,42 @@ jobs:
     - name: Restore
       run: dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
-    - name: Build
+    - name: Install Playwright OS dependencies
       run: |
-        cd SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
+          sudo apt-get update
+          sudo apt-get install -y \
+            curl wget unzip ca-certificates \
+            fonts-liberation \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+            libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 \
+            libgbm1 libasound2 libpangocairo-1.0-0 libcups2
+  
+      # 4️⃣ Install PowerShell (MANDATORY)
+    - name: Install PowerShell
+      run: |
+          sudo snap install powershell --classic
+          pwsh --version
+  
+    # 5️⃣ Restore & Build (Release)
+    - name: Build project
+      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
+      run: |
+        dotnet restore
         dotnet build -c Release
-    
-    - name: Install Playwright browsers
+
+    # 6️⃣ Install Playwright browsers (THE KEY STEP)
+    - name: Install Playwright Chromium
+      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0
       run: |
-        cd SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0
-        pwsh ./playwright.ps1 install --with-deps
+        pwsh -NoProfile -ExecutionPolicy Bypass -File ./playwright.ps1 install chromium
+
+    # 7️⃣ Verify browser exists (DEBUG SAFETY)
+    - name: Verify Playwright browser installation
+      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0
+      run: |
+        echo "Checking Playwright browser folders..."
+        ls -R .playwright || true
+        ls -R .playwright/package/.local-browsers || true
         
     - name: List Playwright browser folder
       run: |
