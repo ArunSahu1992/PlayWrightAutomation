@@ -27,12 +27,11 @@ jobs:
       run: |
         cd SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
         dotnet build -c Release
-  
+    
     - name: Install Playwright browsers
       run: |
         cd SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0
-        chmod +x playwright.sh
-        ./playwright.sh install --with-deps
+        pwsh ./playwright.ps1 install --with-deps
         
     - name: List Playwright browser folder
       run: |
