@@ -24,22 +24,26 @@ jobs:
       run: dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
     - name: Build
-      run: dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj --configuration Release
-
-    - name: Set browser path absolute
-      run: echo "PLAYWRIGHT_BROWSERS_PATH=$(pwd)/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright" >> $GITHUB_ENV
-
+      run: |
+        cd SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
+        dotnet build -c Release
+  
     - name: Install Playwright browsers
-      run: dotnet playwright install --with-deps -p SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
-
-    - name: Check browser folder
       run: |
-        ls -la SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright/package/.local-browsers
-
-    - name: Print build folder
+        cd SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0
+        chmod +x playwright.sh
+        ./playwright.sh install --with-deps
+        
+    - name: List Playwright browser folder
       run: |
-          ls -la SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/
-
-
-    - name: Run Worker
-      run: dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
+        echo "Current directory:"
+        pwd
+    
+        echo "Listing bin/Release/net8.0:"
+        ls -la SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0 || true
+    
+        echo "Listing .playwright:"
+        ls -la SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright || true
+    
+        echo "Listing local browsers:"
+        ls -la SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright/package/.local-browsers || true
