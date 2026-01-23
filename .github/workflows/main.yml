@@ -25,13 +25,21 @@ jobs:
 
     - name: Install Playwright OS dependencies
       run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            curl wget unzip ca-certificates \
-            fonts-liberation \
-            libnss3 libatk1.0-0 libatk-bridge2.0-0 \
-            libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 \
-            libgbm1 libasound2 libpangocairo-1.0-0 libcups2
+        sudo apt-get update
+        sudo apt-get install -y \
+          ca-certificates \
+          fonts-liberation \
+          libnss3 \
+          libatk1.0-0 \
+          libatk-bridge2.0-0 \
+          libx11-xcb1 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxrandr2 \
+          libgbm1 \
+          libpangocairo-1.0-0 \
+          libcups2 \
+          libasound2t64
   
       # 4️⃣ Install PowerShell (MANDATORY)
     - name: Install PowerShell
