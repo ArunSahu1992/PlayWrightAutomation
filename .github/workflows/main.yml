@@ -29,11 +29,8 @@ jobs:
     - name: Set browser path absolute
       run: echo "PLAYWRIGHT_BROWSERS_PATH=$(pwd)/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright" >> $GITHUB_ENV
 
-    - name: Force browser install
-      run: |
-        mkdir -p SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright
-        PLAYWRIGHT_BROWSERS_PATH=$(pwd)/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0/.playwright
-        playwright install --with-deps
+    - name: Install Playwright browsers
+      run: dotnet playwright install --with-deps -p SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
     - name: Check browser folder
       run: |
