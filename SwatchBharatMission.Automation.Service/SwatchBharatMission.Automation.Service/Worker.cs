@@ -20,6 +20,7 @@ namespace SwatchBharatMission.Automation.Service
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
             AutomationJob ob = new AutomationJob(_runner);
             await ob.Execute();
+            Environment.Exit(0);
         }
     }
 }
