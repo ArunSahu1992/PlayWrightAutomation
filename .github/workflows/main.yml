@@ -60,13 +60,10 @@ jobs:
       run: |
         pwsh -NoProfile -ExecutionPolicy Bypass -File ./playwright.ps1 install chromium
 
-    # 7️⃣ Verify browser exists (DEBUG SAFETY)
-    - name: Verify Playwright browser installation
-      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0
+    - name: Locate Playwright browsers
       run: |
-        echo "Checking Playwright browser folders..."
-        ls -R .playwright || true
-        ls -R .playwright/package/.local-browsers || true
+        echo "Playwright cache:"
+        ls -R /home/runner/.cache/ms-playwright || true
         
     - name: List Playwright browser folder
       run: |
