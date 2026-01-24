@@ -20,74 +20,128 @@ namespace Execution
         }
         public async Task ExecuteAsync()
         {
-            List<TestCaseResult> testCases = new List<TestCaseResult>();
+            List<TestCaseResult> testCases = new();
+            List<FailedTestCase> failedTestCases = new();
 
             try
             {
-
-                if (string.IsNullOrEmpty(_options.Value.TestCaseId))
+                var retryTests = FailedTestCaseConfiguration.ReadTodayFailedTests();
+                if (retryTests.Any())
                 {
-                    // Get all the json file name from appsetting json.
-                    // take each json read it  and execute all testcase for the same file.
-
-                    var baseSettings = _options.Value.BaseSetting;
-                    if (baseSettings != null)
+                    Console.WriteLine("Retrying failed test cases...");
+                    foreach (var testCase in retryTests)
                     {
-                        var cityNames = baseSettings.Data;
-
-                        if (cityNames != null && cityNames.Count > 0)
+                        var result = new TestCaseResult
                         {
+                            TestCaseId = testCase.TestName,
+                            StartTime = DateTime.UtcNow
+                        };
+                        try
+                        {
+                            var testInstance = TestCaseFactory.CreateInstance(testCase.TestName);
+                            if (testInstance is null) continue;
 
-                            foreach (var item in cityNames)
+                            var fileData = _registry.GetByTenant(testCase.City);
+
+                            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+                            await RetryHelper.ExecuteWithRetryAsync(
+                            async () =>
                             {
-                                var fileData = _registry.GetByTenant(item.City);
+                                await testInstance.ExecuteAsync(
+                                    fileData,
+                                    _options.Value,
+                                    _logger
+                                );
+                            },
+                            retryCount: _options.Value.RetryCount,
+                            token: cts.Token,
+                            _logger: _logger
+                        );
+                            result.IsPassed = true;
+                            result.Message = "Success";
+                            retryTests.Remove(testCase);
+                        }
+                        catch (Exception ex)
+                        {
+                            result.IsPassed = false;
+                            result.Message = "Failed";
+                            _logger.LogInformation($"Exception Occurred for TestCase {testCase.TestName} " + ex.Message);
+                        }
+                        finally
+                        {
+                            FailedTestCaseConfiguration.WriteFailedTests(retryTests);
+                            testCases.Add(result);
+                            result.EndTime = DateTime.UtcNow;
+                        }
 
-                                if (fileData != null && fileData.TestCases is { Count: > 0 })
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(_options.Value.TestCaseId))
+                    {
+                        // Get all the json file name from appsetting json.
+                        // take each json read it  and execute all testcase for the same file.
+
+                        var baseSettings = _options.Value.BaseSetting;
+                        if (baseSettings != null)
+                        {
+                            var cityNames = baseSettings.Data;
+
+                            if (cityNames != null && cityNames.Count > 0)
+                            {
+                                foreach (var item in cityNames)
                                 {
-                                    foreach (var testcase in fileData.TestCases)
-                                    {
-                                        var result = new TestCaseResult
-                                        {
-                                            TestCaseId = testcase.Key,
-                                            StartTime = DateTime.UtcNow
-                                        };
-                                        try
-                                        {
-                                            var testInstance = TestCaseFactory.CreateInstance(testcase.Key);
-                                            if (testInstance is null) continue;
+                                    var fileData = _registry.GetByTenant(item.City);
 
-                                            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
-                                            await RetryHelper.ExecuteWithRetryAsync(
-                                            async () =>
+                                    if (fileData != null && fileData.TestCases is { Count: > 0 })
+                                    {
+                                        foreach (var testcase in fileData.TestCases)
+                                        {
+                                            var result = new TestCaseResult
                                             {
-                                                await testInstance.ExecuteAsync(
-                                                    fileData,
-                                                    _options.Value,
-                                                    _logger
-                                                );
-                                            },
-                                            retryCount: _options.Value.RetryCount,
-                                            token: cts.Token,
-                                            _logger: _logger
-                                        );
-                                            result.IsPassed = true;
-                                            result.Message = "Success";
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            result.IsPassed = false;
-                                            result.Message = "Failed";
-                                            _logger.LogInformation($"Exception Occurred for TestCase {testcase.Key} " + ex.Message);
-                                        }
-                                        finally
-                                        {
-                                            testCases.Add(result);
-                                            result.EndTime = DateTime.UtcNow;
+                                                TestCaseId = testcase.Key,
+                                                StartTime = DateTime.UtcNow
+                                            };
+                                            try
+                                            {
+                                                var testInstance = TestCaseFactory.CreateInstance(testcase.Key);
+                                                if (testInstance is null) continue;
+
+                                                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+                                                await RetryHelper.ExecuteWithRetryAsync(
+                                                async () =>
+                                                {
+                                                    await testInstance.ExecuteAsync(
+                                                        fileData,
+                                                        _options.Value,
+                                                        _logger
+                                                    );
+                                                },
+                                                retryCount: _options.Value.RetryCount,
+                                                token: cts.Token,
+                                                _logger: _logger
+                                            );
+                                                result.IsPassed = true;
+                                                result.Message = "Success";
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                result.IsPassed = false;
+                                                result.Message = "Failed";
+                                                _logger.LogInformation($"Exception Occurred for TestCase {testcase.Key} " + ex.Message);
+                                                failedTestCases.Add(new FailedTestCase() { City = item.City, TestName = testcase.Key });
+                                            }
+                                            finally
+                                            {
+                                                testCases.Add(result);
+                                                result.EndTime = DateTime.UtcNow;
+                                            }
                                         }
                                     }
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
@@ -95,6 +149,7 @@ namespace Execution
             }
             finally
             {
+                FailedTestCaseConfiguration.WriteFailedTests(failedTestCases);
                 ReportGenerator.GenerateReport(testCases);
                 Console.WriteLine();
                 Console.WriteLine("┌───────────────────────────────────────────┬──────────┬──────────────────┬────────────────────┐");

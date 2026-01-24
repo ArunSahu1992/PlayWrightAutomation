@@ -95,6 +95,7 @@ namespace TestCases
                 catch (Exception ex)
                 {
                     logger.LogInformation("Exception Occurred" + ex.Message);
+                    throw;
                 }
 
                 logger.LogInformation("Executing Get Token.");

@@ -55,7 +55,6 @@ namespace TestCases
                 logger.LogInformation($"Total City Count: {blockCount}");
                 try
                 {
-
                     for (int i = 0; i < blockCount; i++)
                     {
                         await page.WaitForLoadStateAsync(LoadState.Load);
@@ -92,6 +91,7 @@ namespace TestCases
                 catch (Exception ex)
                 {
                     logger.LogInformation("Exception Occurred" + ex.Message);
+                    throw;
                 }
 
                 logger.LogInformation("Executing Get Token.");
@@ -119,7 +119,7 @@ namespace TestCases
             catch (Exception ex)
             {
                 logger.LogInformation(ex.Message);
-                throw ex;
+                throw;
             }
             finally
             {
