@@ -17,4 +17,9 @@
     <ProjectReference Include="..\TestCases\TestCases.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ExecutionContext\" />
+    <Folder Include="Interface\" />
+  </ItemGroup>
+
 </Project>

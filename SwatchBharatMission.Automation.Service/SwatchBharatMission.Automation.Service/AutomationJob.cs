@@ -2,13 +2,14 @@
 using Execution;
 using Configuration;
 using Microsoft.Extensions.Options;
+using Execution.Runner;
 
 namespace SwatchBharatMission.Automation.Service
 {
     public class AutomationJob
     {
-        private readonly TestExecutor _runner;
-        public AutomationJob(TestExecutor runner)
+        private readonly Orchestrator _runner;
+        public AutomationJob(Orchestrator runner)
         {
             _runner = runner;
         }

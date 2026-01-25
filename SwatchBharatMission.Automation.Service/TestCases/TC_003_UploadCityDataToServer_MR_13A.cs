@@ -87,7 +87,10 @@ namespace TestCases
                         filesToUpload.Add(filePath);
 
                         // Go back
+                        logger.LogInformation($"Clicking back button.");
                         await page.ClickAsync("#ctl00_ContentPlaceHolder1_lnk_backBlock");
+                        await page.WaitForLoadStateAsync(LoadState.Load);
+
                     }
 
                 }

@@ -1,15 +1,16 @@
 using Execution;
+using Execution.Runner;
 
 namespace SwatchBharatMission.Automation.Service
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly TestExecutor _runner;
+        private readonly Orchestrator _runner;
 
 
         public Worker(ILogger<Worker> logger,
-            TestExecutor runner)
+            Orchestrator runner)
         {
             _logger = logger;
             _runner = runner;
@@ -18,8 +19,7 @@ namespace SwatchBharatMission.Automation.Service
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            AutomationJob ob = new AutomationJob(_runner);
-            await ob.Execute();
+            await _runner.ExecuteAsync();
             Environment.Exit(0);
         }
     }

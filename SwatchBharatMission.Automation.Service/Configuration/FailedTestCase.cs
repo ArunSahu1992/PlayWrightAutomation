@@ -8,9 +8,7 @@ namespace Configuration
 {
     public class FailedTestCase
     {
-        public string TestName { get; set; }
-        public string City { get; set; }
-        public string Error { get; set; }
-        public DateTime Timestamp { get; set; }
+        public string City { get; set; } = string.Empty;
+        public string TestName { get; set; } = string.Empty;
     }
 }

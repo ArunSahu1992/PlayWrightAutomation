@@ -3,6 +3,7 @@ using Configuration;
 using SwatchBharatMission.Automation.Service;
 using Execution;
 using Serilog;
+using Execution.Runner;
 
 
 
@@ -54,8 +55,12 @@ Log.Logger = new LoggerConfiguration()
 
 
         // Automation
+        services.AddSingleton<FullSuiteRunner>();
+        services.AddSingleton<TestExecutionService>();
+        services.AddSingleton<FailedTestRunner>();
         services.AddSingleton<TestExecutor>();
         services.AddHostedService<Worker>();
+        services.AddSingleton<Orchestrator>();
 
     })
     .Build();
