@@ -51,7 +51,7 @@ namespace Configuration
         {
             var folderPath = Path.Combine(
                 _hostEnvironment.ContentRootPath,
-                "Settings",
+                "settings",
                 flowName);
 
             Console.WriteLine("Folder Path " + folderPath);
