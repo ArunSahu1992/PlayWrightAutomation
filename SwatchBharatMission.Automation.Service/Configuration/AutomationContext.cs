@@ -54,6 +54,8 @@ namespace Configuration
                 "Settings",
                 flowName);
 
+            Console.WriteLine("Folder Path " + folderPath);
+
             if (!Directory.Exists(folderPath))
                 throw new DirectoryNotFoundException(folderPath);
 
