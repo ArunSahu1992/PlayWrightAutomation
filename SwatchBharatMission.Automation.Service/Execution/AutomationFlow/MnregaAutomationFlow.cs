@@ -1,48 +1,50 @@
 ﻿using Configuration;
+using Execution.context;
+using Execution.Runner;
+using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Execution.Runner
+namespace Execution.AutomationFlow
 {
-    /// <summary>
-    /// Orchestrates execution flow and reporting.
-    /// Decides whether to run full suite or retry failed tests.
-    /// </summary>
-    public sealed class Orchestrator
+    public class MnregaAutomationFlow : IAutomationFlow
     {
-        private readonly FullSuiteRunner _fullSuite;
+        public string Name => Constants.MANREGA_FLOW_NAME;
+        private readonly FullSuiteRunner _fullRunner;
         private readonly FailedTestRunner _failedRunner;
+        private readonly ILogger<MnregaAutomationFlow> _logger;
 
-        public Orchestrator(
-        FullSuiteRunner fullSuite,
-        FailedTestRunner failedRunner)
+        public MnregaAutomationFlow(
+        FullSuiteRunner fullRunner,
+        FailedTestRunner failedRunner,
+        ILogger<MnregaAutomationFlow> logger)
         {
-            _fullSuite = fullSuite;
+            _fullRunner = fullRunner;
             _failedRunner = failedRunner;
+            _logger = logger;
         }
 
-        public async Task ExecuteAsync()
+        public async Task ExecuteAsync(AutomationContext automationContext)
         {
             var testResults = new List<TestCaseResult>();
             var failedTestCases = new List<FailedTestCase>();
-
             var retryTests = FailedTestCaseConfiguration.ReadTodayFailedTests();
 
 
             if (retryTests.Any())
             {
                 testResults.AddRange(
-                await _failedRunner.RunAsync(retryTests));
+                await _failedRunner.RunAsync(retryTests, automationContext));
             }
             else
             {
                 testResults.AddRange(
-                await _fullSuite.RunAsync(failedTestCases));
+                await _fullRunner.RunAsync(failedTestCases, automationContext));
             }
-
 
             FailedTestCaseConfiguration.WriteFailedTests(failedTestCases);
             ReportGenerator.GenerateReport(testResults);

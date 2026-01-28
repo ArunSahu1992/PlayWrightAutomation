@@ -1,0 +1,31 @@
+{
+  "LoginEndpoint": "https://api.districtdashboard.in/api/account/login",
+  "UserName": "auto",
+  "Password": "Auto#2026",
+  "TestCases": {
+    "TC_006_UploadCityDataToServer_MN_18_3": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r18_3"
+    },
+    "TC_007_UploadCityDataToServer_MN_7_1_1": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r7_1_1"
+    },
+    "TC_008_UploadCityDataToServer_MN_7_2_2": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r7_2_2"
+    },
+    "TC_009_UploadCityDataToServer_MN_7_2_3": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r7_2_3"
+    },
+    "TC_010_UploadCityDataToServer_MN_5_6": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r5_6"
+    },
+    "TC_011_UploadCityDataToServer_MN_6_9": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r6_9"
+    },
+    "TC_012_UploadCityDataToServer_MN_18_4": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r18_4"
+    },
+    "TC_013_UploadCityDataToServer_MN_5_11": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r5_11"
+    }
+  }
+}

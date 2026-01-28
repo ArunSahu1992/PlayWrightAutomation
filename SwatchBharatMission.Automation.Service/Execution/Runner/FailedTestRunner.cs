@@ -1,4 +1,5 @@
 ﻿using Configuration;
+using Execution.context;
 
 namespace Execution.Runner
 {
@@ -13,15 +14,14 @@ namespace Execution.Runner
             _executor = executor;
         }
         public async Task<List<TestCaseResult>> RunAsync(
-        List<FailedTestCase> retryTests)
+        List<FailedTestCase> retryTests, AutomationContext automationContext)
         {
             var results = new List<TestCaseResult>();
-
 
             foreach (var testCase in retryTests)
             {
                 results.Add(
-                await _executor.ExecuteAsync(
+                await _executor.ExecuteAsync(automationContext,
                 testCase.City,
                 testCase.TestName));
             }

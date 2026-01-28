@@ -24,8 +24,8 @@ namespace Execution
                 var p = l.Split(',');
                 return new FailedTestCase
                 {
-                    TestName = p[1],
-                    City = p[2],
+                    TestName = p[0],
+                    City = p[1],
                 };
             }).ToList();
         }

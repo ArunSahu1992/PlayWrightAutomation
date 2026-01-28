@@ -3,20 +3,21 @@ using Execution;
 using Configuration;
 using Microsoft.Extensions.Options;
 using Execution.Runner;
+using Execution.AutomationFlow;
 
 namespace SwatchBharatMission.Automation.Service
 {
     public class AutomationJob
     {
-        private readonly Orchestrator _runner;
-        public AutomationJob(Orchestrator runner)
-        {
-            _runner = runner;
-        }
+        //private readonly AutomationWorker _runner;
+        //public AutomationJob(AutomationWorker runner)
+        //{
+        //    _runner = runner;
+        //}
 
-        public async Task Execute()
-        {
-            await _runner.ExecuteAsync();
-        }
+        //public async Task Execute(string flowName)
+        //{
+        //    await _runner.RunAsync(flowName);
+        //}
     }
 }

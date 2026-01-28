@@ -10,43 +10,38 @@ namespace Execution.Runner
     {
         private readonly TestExecutionService _executor;
         private readonly AutomationSettings _settings;
-        private readonly IConfigurationRegistry _registry;
 
 
         public FullSuiteRunner(
         TestExecutionService executor,
-        IOptions<AutomationSettings> options,
-        IConfigurationRegistry registry)
+        IOptions<AutomationSettings> options)
         {
             _executor = executor;
             _settings = options.Value;
-            _registry = registry;
         }
 
 
         public async Task<List<TestCaseResult>> RunAsync(
-        List<FailedTestCase> failedTestCases)
+        List<FailedTestCase> failedTestCases, AutomationContext automationContext)
         {
             var results = new List<TestCaseResult>();
 
-            foreach (var city in _settings.BaseSetting.Data)
+            foreach (var city in automationContext.automationFlowSettings.BaseSetting.Data)
             {
-                var fileData = _registry.GetByTenant(city.City);
-                if (fileData?.TestCases == null) continue;
-
-
-                foreach (var test in fileData.TestCases.Keys)
+                var cityKey = automationContext.Cities[city.City];
+                if (cityKey is null) continue;
+                foreach (var test in cityKey.TestCases)
                 {
-                    var result = await _executor.ExecuteAsync(city.City, test);
+                    automationContext.automationFlowSettings.TenantCode = city.TenantCode;
+                    var result = await _executor.ExecuteAsync(automationContext,city.City, test.Key);
                     results.Add(result);
-
 
                     if (!result.IsPassed)
                     {
                         failedTestCases.Add(new FailedTestCase
                         {
                             City = city.City,
-                            TestName = test
+                            TestName = test.Key
                         });
                     }
                 }

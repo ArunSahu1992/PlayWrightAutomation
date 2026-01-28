@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="ExtentReports" Version="5.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.3.9" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
     <PackageReference Include="Serilog" Version="4.3.0" />
   </ItemGroup>
@@ -15,11 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Automation.Core\Automation.Core.csproj" />
     <ProjectReference Include="..\TestCases\TestCases.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ExecutionContext\" />
-    <Folder Include="Interface\" />
   </ItemGroup>
 
 </Project>

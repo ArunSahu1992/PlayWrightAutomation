@@ -1,5 +1,6 @@
 ﻿using Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,21 +17,21 @@ namespace TestCases.common
     public class CustomUploadFileService
     {
         private readonly HttpClient _httpClient;
-        private readonly UploadAutomationSettings _settings;
+        private readonly AutomationContext _settings;
 
-        public CustomUploadFileService(UploadAutomationSettings options)
+        public CustomUploadFileService(AutomationContext options)
         {
             _httpClient = new HttpClient();
             _settings = options;
         }
-        public async Task<(string,HttpStatusCode)> UploadFiles(string token, Dictionary<string, List<string>> filesToUpload)
+        public async Task<(string,HttpStatusCode)> UploadFiles(string token, Dictionary<string, List<string>> filesToUpload,string TestCaseId)
         {
             var response = await RetryHelper.ExecuteAsync(
                       async () =>
                       {
                           var client = new HttpClient();
-                          var request = new HttpRequestMessage(HttpMethod.Post, _settings.TestCases.FirstOrDefault(x => x.Key == _settings.TestCaseName).Value.UploadApiUrl);
-                          request.Headers.Add("tenant-code", _settings.TenantCode);
+                          var request = new HttpRequestMessage(HttpMethod.Post, _settings.Cities[_settings.automationFlowSettings.TenantCode].TestCases.FirstOrDefault(x => x.Key == TestCaseId).Value.UploadApiUrl);
+                          request.Headers.Add("tenant-code", _settings.automationFlowSettings.TenantCode);
                           request.Headers.Add("Authorization", $"bearer {token}");
                           var content = new MultipartFormDataContent();
                           foreach (var key in filesToUpload.Keys)

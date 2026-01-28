@@ -1,11 +1,6 @@
 ﻿using Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Execution
 {
@@ -16,22 +11,21 @@ namespace Execution
     public sealed class TestExecutionService
     {
         private readonly IOptions<AutomationSettings> _options;
-        private readonly IConfigurationRegistry _registry;
+        private readonly IEnumerable<ITestCase> _allTestCases;
         private readonly ILogger _logger;
 
 
         public TestExecutionService(
-        IOptions<AutomationSettings> options,
-        IConfigurationRegistry registry,
+        IOptions<AutomationSettings> options, IEnumerable<ITestCase> allTestCases,
          ILoggerFactory loggerFactory)
         {
             _options = options;
-            _registry = registry;
+            _allTestCases = allTestCases;
             _logger = loggerFactory.CreateLogger("TestExecutor");
         }
 
 
-        public async Task<TestCaseResult> ExecuteAsync(string city, string testCaseId)
+        public async Task<TestCaseResult> ExecuteAsync(AutomationContext automationContext, string city, string testCaseId)
         {
             var result = new TestCaseResult
             {
@@ -41,9 +35,8 @@ namespace Execution
 
             try
             {
-                var fileData = _registry.GetByTenant(city);
-                var testInstance = TestCaseFactory.CreateInstance(testCaseId);
-
+                var testInstance  = _allTestCases.First(f =>
+                f.TestCaseId.Equals(testCaseId, StringComparison.OrdinalIgnoreCase));
 
                 if (testInstance == null)
                     throw new InvalidOperationException("Test instance not found");
@@ -53,10 +46,9 @@ namespace Execution
 
                 await RetryHelper.ExecuteWithRetryAsync(
                 async () => await testInstance.ExecuteAsync(
-                fileData,
-                _options.Value,
+                automationContext,
                 _logger),
-                _options.Value.RetryCount,
+                automationContext.automationFlowSettings.RetryCount,
                 cts.Token,
                 _logger);
 

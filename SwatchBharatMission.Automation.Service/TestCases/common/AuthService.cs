@@ -1,5 +1,6 @@
 ﻿using Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,9 @@ namespace TestCases.common
     public class AuthService
     {
         private readonly HttpClient _httpClient;
-        private readonly UploadAutomationSettings _settings;
+        private readonly AutomationContext _settings;
 
-        public AuthService(UploadAutomationSettings options)
+        public AuthService(AutomationContext options)
         {
             _httpClient = new HttpClient();
             _settings = options;
@@ -29,14 +30,14 @@ namespace TestCases.common
                {
                    var request = new HttpRequestMessage(
            HttpMethod.Post,
-           _settings.LoginEndpoint);
+           _settings.Cities[_settings.automationFlowSettings.TenantCode].LoginEndpoint);
 
-                   request.Headers.Add("tenant-code", _settings.TenantCode);
+                   request.Headers.Add("tenant-code", _settings.automationFlowSettings.TenantCode);
 
                    var login = new LoginRequest
                    {
-                       Username = _settings.UserName,
-                       Password = _settings.Password
+                       Username = _settings.Cities[_settings.automationFlowSettings.TenantCode].UserName,
+                       Password = _settings.Cities[_settings.automationFlowSettings.TenantCode].Password
                    };
 
                    request.Content = new StringContent(

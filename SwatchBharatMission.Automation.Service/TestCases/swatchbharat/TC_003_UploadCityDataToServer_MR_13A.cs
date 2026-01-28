@@ -11,23 +11,23 @@ namespace TestCases
     {
         public string TestCaseId => "TC_003_UploadCityDataToServer_MR_13A";
 
-        public async Task ExecuteAsync(UploadAutomationSettings uploadAutomationSettings, AutomationSettings automationSettings, ILogger logger)
+        public async Task ExecuteAsync(AutomationContext automationContext, ILogger logger)
         {
             var filesToUpload = new List<string>();
-            await using var context = await PlaywrightFactory.CreateAsync(automationSettings.Headless);
+            await using var context = await PlaywrightFactory.CreateAsync(automationContext.automationFlowSettings.Headless);
             var page = context.Page;
             page.SetDefaultTimeout(60000);           // 60 seconds
             page.SetDefaultNavigationTimeout(60000);
-            logger.LogInformation($"TestCase {TestCaseId} Started for : {uploadAutomationSettings.TenantCode} ");
+            logger.LogInformation($"TestCase {TestCaseId} Started for : {automationContext.automationFlowSettings.TenantCode} ");
 
             try
             {
-                string state = uploadAutomationSettings.State;
-                string city = uploadAutomationSettings.TenantCode;
-                uploadAutomationSettings.TestCaseName = GetType().Name;
+                string state = automationContext.automationFlowSettings.BaseSetting.State;
+                string city = automationContext.automationFlowSettings.TenantCode;
+                automationContext.automationFlowSettings.TestCaseName = GetType().Name;
 
                 // Navigate
-                await page.GotoAsync(automationSettings.BaseUrl);
+                await page.GotoAsync(automationContext.automationFlowSettings.BaseUrl);
                 await page.WaitForLoadStateAsync(LoadState.Load);
                 logger.LogInformation("Page Loaded");
 
@@ -102,15 +102,15 @@ namespace TestCases
 
                 logger.LogInformation("Executing Get Token.");
                 // Upload files
-                var authService = new AuthService(uploadAutomationSettings);
+                var authService = new AuthService(automationContext);
                 string token = await authService.GetTokenAsync();
 
                 logger.LogInformation("Token recieved.");
 
 
                 logger.LogInformation("Executing UploadFileService.");
-                var uploadFileService = new UploadFileService(uploadAutomationSettings);
-                var result = await uploadFileService.UploadFiles(token, filesToUpload);
+                var uploadFileService = new UploadFileService(automationContext);
+                var result = await uploadFileService.UploadFiles(token, filesToUpload, TestCaseId);
 
                 if (!(result.Item1 == "Import completed successfully" &&
                       result.Item2 == HttpStatusCode.OK))

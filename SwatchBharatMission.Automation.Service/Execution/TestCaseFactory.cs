@@ -1,25 +1,11 @@
 ﻿using Automation.Core;
 using System.Reflection;
-using TestCases;
+using Configuration;
 
 namespace Execution
 {
     public static class TestCaseFactory
     {
-        private static readonly Dictionary<string, Func<ITestCase>> _testCases =
-            new()
-            {
-            { "TC_001", () => new TC_001_UploadCityDataToServer_MR_05() },
-            { "TC_002", () => new TC_002_UploadCityDataToServer_MR_3A_SWM() },
-            };
-
-        public static ITestCase Get(string testCaseId)
-        {
-            if (!_testCases.ContainsKey(testCaseId))
-                throw new Exception($"TestCase not found: {testCaseId}");
-
-            return _testCases[testCaseId]();
-        }
 
         public static ITestCase? CreateInstance(string className)
         {
