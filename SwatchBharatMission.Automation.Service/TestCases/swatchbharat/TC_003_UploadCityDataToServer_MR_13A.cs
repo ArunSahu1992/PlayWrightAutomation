@@ -73,7 +73,6 @@ namespace TestCases
                         {
                             await page.Locator("#ctl00_ContentPlaceHolder1_btnExcel").ClickAsync();
                         });
-
                         // Prepare temp directory
                         string tempDir = Path.Combine(Path.GetTempPath(), "AutomationFiles");
                         Directory.CreateDirectory(tempDir);
@@ -90,7 +89,19 @@ namespace TestCases
                         logger.LogInformation($"Clicking back button.");
                         await page.ClickAsync("#ctl00_ContentPlaceHolder1_lnk_backBlock");
                         await page.WaitForLoadStateAsync(LoadState.Load);
+                        logger.LogInformation($"Page reloading."); 
+                        await Task.Delay(3000);
+                        logger.LogInformation($"Page reloaded.");
 
+                        await page
+                             .Locator("a[id$='_lnkBlockName']", new()
+                             {
+                                 HasText = "CHIPALUN"
+                             })
+                             .First
+                             .WaitForAsync();
+
+                        logger.LogInformation($"I can see the first city "+ blockName);
                     }
 
                 }
