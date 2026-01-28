@@ -22,7 +22,6 @@ namespace Configuration
             FlowName = flowName;
             automationFlowSettings = settings;
             _hostEnvironment = hostEnvironment;
-            EnsureDirectories();
         }
 
         private void EnsureDirectories()
