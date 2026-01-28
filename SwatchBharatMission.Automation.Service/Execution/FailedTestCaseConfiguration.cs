@@ -1,4 +1,5 @@
 ﻿using Configuration;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Execution
 {
     public class FailedTestCaseConfiguration
     {
-        private static string FailureDir = Path.Combine(AppContext.BaseDirectory, "failed-tests");
+        private static string FailureDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "failed-tests");
         public static List<FailedTestCase> ReadTodayFailedTests()
         {
             var path = GetCsvPath();
@@ -44,7 +45,7 @@ namespace Execution
                 File.Delete(CsvPath);
 
             Directory.CreateDirectory(FailureDir);
-
+            
             using var sw = new StreamWriter(CsvPath, false);
             sw.WriteLine("TestCaseId,TestName,Error,Timestamp");
 

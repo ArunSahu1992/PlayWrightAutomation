@@ -57,13 +57,13 @@ namespace TestCases
                 logger.LogInformation($"Total City Count: {blockCount}");
                 try
                 {
-
+                    string firstCity = string.Empty;
                     for (int i = 0; i < blockCount; i++)
                     {
                         await page.WaitForLoadStateAsync(LoadState.Load);
                         var block = page.Locator("a[id$='_lnkBlockName']").Nth(i);
                         string blockName = (await block.InnerTextAsync()).Trim();
-
+                        if( i== 0) firstCity = blockName;
                         logger.LogInformation($"Clicking block: {blockName}");
 
                         await block.ClickAsync();
@@ -96,7 +96,7 @@ namespace TestCases
                         await page
                              .Locator("a[id$='_lnkBlockName']", new()
                              {
-                                 HasText = "CHIPALUN"
+                                 HasText = firstCity
                              })
                              .First
                              .WaitForAsync();

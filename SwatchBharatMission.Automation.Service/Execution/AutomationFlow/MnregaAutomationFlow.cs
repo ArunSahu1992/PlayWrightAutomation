@@ -28,7 +28,7 @@ namespace Execution.AutomationFlow
             _logger = logger;
         }
 
-        public async Task ExecuteAsync(AutomationContext automationContext)
+        public async Task<List<TestCaseResult>> ExecuteAsync(AutomationContext automationContext)
         {
             var testResults = new List<TestCaseResult>();
             var failedTestCases = new List<FailedTestCase>();
@@ -47,8 +47,7 @@ namespace Execution.AutomationFlow
             }
 
             FailedTestCaseConfiguration.WriteFailedTests(failedTestCases);
-            ReportGenerator.GenerateReport(testResults);
-            ConsoleReportPrinter.Print(testResults);
+            return testResults;
         }
     }
 }

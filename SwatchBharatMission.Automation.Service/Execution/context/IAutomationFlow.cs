@@ -11,6 +11,6 @@ namespace Execution.context
     public interface IAutomationFlow
     {
         string Name { get; }
-        Task ExecuteAsync(AutomationContext automationContext);
+        Task<List<TestCaseResult>> ExecuteAsync(AutomationContext automationContext);
     }
 }

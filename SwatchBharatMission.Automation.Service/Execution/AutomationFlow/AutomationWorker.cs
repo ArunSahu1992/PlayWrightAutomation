@@ -1,4 +1,5 @@
-﻿using Execution.context;
+﻿using Configuration;
+using Execution.context;
 using Execution.Interface;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Playwright;
@@ -23,12 +24,12 @@ namespace Execution.AutomationFlow
             _flowResolver = flowResolver;
         }
 
-        public async Task RunAsync(string flowName, IHostEnvironment _hostEnvironment)
+        public async Task<List<TestCaseResult>>  RunAsync(string flowName, IHostEnvironment _hostEnvironment)
         {
             var context = _contextFactory.Create(flowName, _hostEnvironment);
             var flow = _flowResolver.Resolve(flowName);
 
-            await flow.ExecuteAsync(context);
+            return await flow.ExecuteAsync(context);
         }
     }
 }

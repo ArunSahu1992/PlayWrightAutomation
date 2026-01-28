@@ -25,19 +25,24 @@ namespace SwatchBharatMission.Automation.Service
         {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
             var flows = new[] { Constants.SWATCHBHARAT_FLOW_NAME, Constants.MANREGA_FLOW_NAME };
+            var testResults = new List<TestCaseResult>();
+
             try
             {
                 foreach (var flow in flows)
                 {
                     try
                     {
-                        await _runner.RunAsync(flow, _hostEnvironment);
+                        testResults.AddRange(await _runner.RunAsync(flow, _hostEnvironment));
                     }
                     catch (Exception ex)
                     {
                         _logger.LogError(ex, "Warning for flow : {FlowName}", flow);
                     }
                 }
+
+                ReportGenerator.GenerateReport(testResults);
+                ConsoleReportPrinter.Print(testResults);
             }
             finally
             {
