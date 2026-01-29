@@ -31,7 +31,6 @@ namespace TestCases
                 await page.GotoAsync(automationContext.automationFlowSettings.BaseUrl);
                 await page.WaitForLoadStateAsync(LoadState.Load);
                 logger.LogInformation("Page Loaded");
-                throw new Exception();
                 var text = await page.InnerTextAsync("#ContentPlaceHolder1_lblStopSpam");
                 var match = Regex.Match(text, @"(\d+)\s*([+\-*/])\s*(\d+)");
                 if (!match.Success)
