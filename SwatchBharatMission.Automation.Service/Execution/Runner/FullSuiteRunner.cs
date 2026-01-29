@@ -41,7 +41,8 @@ namespace Execution.Runner
                         failedTestCases.Add(new FailedTestCase
                         {
                             City = city.City,
-                            TestName = test.Key
+                            TestName = test.Key,
+                            TenantCode = city.TenantCode
                         });
                     }
                 }

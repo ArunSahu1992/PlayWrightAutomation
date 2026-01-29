@@ -102,7 +102,6 @@ namespace TestCases
 
                 logger.LogInformation("Token recieved.");
 
-
                 logger.LogInformation("Executing UploadFileService.");
                 var uploadFileService = new UploadFileService(automationContext);
                 var result = await uploadFileService.UploadFiles(token, filesToUpload, TestCaseId);

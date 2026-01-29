@@ -2,12 +2,6 @@
 using Execution.context;
 using Execution.Runner;
 using Microsoft.Extensions.Logging;
-using Microsoft.Playwright;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Execution.AutomationFlow
 {

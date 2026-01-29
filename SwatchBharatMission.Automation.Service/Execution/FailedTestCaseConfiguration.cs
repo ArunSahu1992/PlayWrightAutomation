@@ -20,7 +20,7 @@ namespace Execution
 
             var lines = File.ReadAllLines(path).Skip(1);
 
-            return lines.Select(l =>
+            var res = lines.Select(l =>
             {
                 var p = l.Split(',');
                 return new FailedTestCase
@@ -28,7 +28,11 @@ namespace Execution
                     TestName = p[0],
                     City = p[1],
                 };
-            }).ToList();
+            }).ToList().Where(x => x.CreatedDate == DateTime.Now.Date);
+
+            File.Delete(GetCsvPath());
+
+            return res.ToList();
         }
 
         public static void WriteFailedTests(List<FailedTestCase> failed)
