@@ -36,11 +36,10 @@ namespace Execution.AutomationFlow
             }
             else
             {
+
                 testResults.AddRange(
                 await _fullRunner.RunAsync(failedTestCases, automationContext));
             }
-
-            FailedTestCaseConfiguration.WriteFailedTests(failedTestCases);
             return testResults;
         }
     }

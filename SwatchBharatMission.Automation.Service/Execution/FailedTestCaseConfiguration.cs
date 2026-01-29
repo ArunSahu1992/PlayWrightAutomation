@@ -20,13 +20,13 @@ namespace Execution
 
             var lines = File.ReadAllLines(path).Skip(1);
 
-            var res = lines.Select(l =>
-            {
-                var p = l.Split(',');
+            var res = lines.Select(l =>{var p = l.Split(',');
                 return new FailedTestCase
                 {
                     TestName = p[0],
                     City = p[1],
+                    TenantCode = p[2],
+                    CreatedDate = DateTime.Parse(p[3]).Date
                 };
             }).ToList().Where(x => x.CreatedDate == DateTime.Now.Date);
 
@@ -38,32 +38,45 @@ namespace Execution
         public static void WriteFailedTests(List<FailedTestCase> failed)
         {
             var CsvPath = GetCsvPath();
-            if (!failed.Any())
+            if (failed != null && !failed.Any())
             {
                 if (File.Exists(CsvPath))
                     File.Delete(CsvPath);
                 return;
             }
-      
+
+            Console.WriteLine("Writing Failied TestCases at Location: " + CsvPath);
+
             if (File.Exists(CsvPath))
                 File.Delete(CsvPath);
 
             Directory.CreateDirectory(FailureDir);
-            
-            using var sw = new StreamWriter(CsvPath, false);
-            sw.WriteLine("TestCaseId,TestName,Error,Timestamp");
 
-            foreach (var f in failed)
+            Console.WriteLine("Directory Created at path:  " + CsvPath);
+
+            try
             {
-                sw.WriteLine(
-                    $"{f.TestName},{f.City}"
-                );
+                using var sw = new StreamWriter(CsvPath, false);
+                sw.WriteLine("TestCaseId,City,TenantCode,CreatedDate");
+
+                foreach (var f in failed)
+                {
+                    sw.WriteLine(
+                        $"{f.TestName},{f.City},{f.TenantCode},{DateTime.Now.Date}"
+                    );
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed TestCase Written failed due to :  " + ex.Message);
+                throw;
+            }
+            Console.WriteLine("Failed TestCase Written Succeddfully at :  " + CsvPath);
         }
 
         private static string GetCsvPath()
         {
-          
+
             return Path.Combine(
                 FailureDir,
                 $"failed-tests.csv"

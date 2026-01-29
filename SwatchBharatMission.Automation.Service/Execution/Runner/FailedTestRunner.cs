@@ -29,7 +29,7 @@ namespace Execution.Runner
                 testCase.City,
                 testCase.TestName));
             }
-            var failedTestCase = results.Where(x => x.IsPassed == false).Select(x => new Configuration.FailedTestCase()
+            var failedTestCase = results.Where(x => x.IsPassed == false)?.Select(x => new Configuration.FailedTestCase()
             {
                 TestName = x.TestCaseId,
                 City = retryTests.FirstOrDefault(p => p.TestName == x.TestCaseId)?.City,

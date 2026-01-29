@@ -37,7 +37,7 @@ namespace SwatchBharatMission.Automation.Service
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Warning for flow : {FlowName}", flow);
+                        _logger.LogError(ex.Message, "Warning for flow : {FlowName}", flow);
                     }
                 }
 

@@ -7,7 +7,7 @@
       "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r18_4"
     },
     "TC_013_UploadCityDataToServer_MN_5_11": {
-      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r5_11"
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r5_1"
     }
   }
 }

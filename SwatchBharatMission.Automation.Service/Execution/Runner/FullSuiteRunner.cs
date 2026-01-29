@@ -38,6 +38,7 @@ namespace Execution.Runner
 
                     if (!result.IsPassed)
                     {
+                        failedTestCases =  failedTestCases ?? new List<FailedTestCase>();
                         failedTestCases.Add(new FailedTestCase
                         {
                             City = city.City,
@@ -46,6 +47,7 @@ namespace Execution.Runner
                         });
                     }
                 }
+                FailedTestCaseConfiguration.WriteFailedTests(failedTestCases);
             }
 
 

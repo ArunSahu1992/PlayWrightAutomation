@@ -17,13 +17,9 @@ namespace Configuration
         public string Message { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+
+        public FailedTestCase FailedTestCases{ get; set; }
         public string Status => IsPassed ? "PASSED" : "FAILED";
 
-
-        public class FailedTestCase
-        {
-            public string City { get; set; }
-            public string TestName { get; set; }
-        }
     }
 }
