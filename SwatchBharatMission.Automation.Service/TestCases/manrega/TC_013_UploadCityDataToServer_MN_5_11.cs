@@ -42,6 +42,7 @@ namespace TestCases
                 int a = int.Parse(match.Groups[1].Value);
                 int b = int.Parse(match.Groups[3].Value);
                 string op = match.Groups[2].Value;
+                throw new Exception();
                 int answer = op switch
                 {
                     "+" => a + b,

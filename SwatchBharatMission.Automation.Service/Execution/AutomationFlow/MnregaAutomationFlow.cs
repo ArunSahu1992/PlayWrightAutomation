@@ -28,7 +28,7 @@ namespace Execution.AutomationFlow
             var failedTestCases = new List<FailedTestCase>();
             var retryTests = FailedTestCaseConfiguration.ReadTodayFailedTests();
 
-                  Console.WriteLine("Failed test case found " + retryTests.Count);
+            Console.WriteLine("Failed test case found " + retryTests.Count);
             if (retryTests.Any())
             {
                 testResults.AddRange(
