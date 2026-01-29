@@ -10,7 +10,23 @@ namespace Execution
 {
     public class FailedTestCaseConfiguration
     {
-        private static string FailureDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "failed-tests");
+        private static string FailureDir = Path.Combine(GetPersistentPath(), "failed-tests");
+
+        public static string GetPersistentPath()
+        {
+            // 1️⃣ Try ApplicationData (Windows/macOS)
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            if (!string.IsNullOrWhiteSpace(appData))
+                return appData;
+
+            // 2️⃣ Linux fallback → HOME
+            var home = Environment.GetEnvironmentVariable("HOME");
+            if (!string.IsNullOrWhiteSpace(home))
+                return Path.Combine(home, ".config");
+
+            // 3️⃣ Last resort (CI-safe)
+            return "/tmp";
+        }
         public static List<FailedTestCase> ReadTodayFailedTests()
         {
             var path = GetCsvPath();
