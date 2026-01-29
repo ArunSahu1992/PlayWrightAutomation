@@ -1,4 +1,4 @@
-﻿using Automation.Core;
+using Automation.Core;
 using Microsoft.Playwright;
 using Configuration;
 using Microsoft.Extensions.Logging;
@@ -90,6 +90,8 @@ namespace TestCases
                 foreach (var item in radioList)
                 {
                     await page.ClickAsync($"#{item.Value}");
+
+                    Console.WriteLine("Radio Clicked " + item.Value);
 
                     var download = await page.RunAndWaitForDownloadAsync(async () =>
                     {
