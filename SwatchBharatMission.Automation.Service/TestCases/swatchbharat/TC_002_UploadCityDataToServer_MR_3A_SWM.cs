@@ -38,7 +38,6 @@ namespace TestCases
                 await page.WaitForLoadStateAsync(LoadState.Load);
                 logger.LogInformation("Page Loaded");
 
-                throw new Exception();
                 await page.ClickAsync("#RptrPhaseIIMISreport_ctl01_lnkbtn_PageLinkHeader");
                 await page.WaitForLoadStateAsync(LoadState.Load);
                 logger.LogInformation("State Page Loaded.");
@@ -48,6 +47,7 @@ namespace TestCases
 
                 foreach (var category in categories)
                 {
+
                     logger.LogInformation($"Processing category: {category}");
 
                     filesToUpload[category] = new List<string>();
