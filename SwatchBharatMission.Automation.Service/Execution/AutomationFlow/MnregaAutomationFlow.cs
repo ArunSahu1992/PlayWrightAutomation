@@ -34,11 +34,13 @@ namespace Execution.AutomationFlow
 
             if (retryTests.Any())
             {
+                Console.WriteLine("Executing failed testcases for flow :" + Name);
                 testResults.AddRange(
                 await _failedRunner.RunAsync(retryTests, automationContext));
             }
             else if(automationContext.IsFirstRun)
             {
+                Console.WriteLine("Executing Full testcases for flow :" + Name);
                 testResults.AddRange(
                 await _fullRunner.RunAsync(failedTestCases, automationContext));
             }
