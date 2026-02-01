@@ -3,7 +3,6 @@
   "UserName": "auto",
   "Password": "Auto#2026",
   "State": "Maharashtra",
-  "TenantCode": "solapur",
   "TestCases": {
     "TC_006_UploadCityDataToServer_MN_18_3": {
       "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r18_3"
@@ -22,6 +21,13 @@
     },
     "TC_011_UploadCityDataToServer_MN_6_9": {
       "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r6_9"
+    },
+    "TC_012_UploadCityDataToServer_MN_18_4": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r18_4"
+    },
+    "TC_013_UploadCityDataToServer_MN_5_11": {
+      "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/mgnrega/r5_1"
     }
+
   }
 }

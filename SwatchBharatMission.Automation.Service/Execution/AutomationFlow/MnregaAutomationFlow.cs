@@ -28,15 +28,17 @@ namespace Execution.AutomationFlow
             var failedTestCases = new List<FailedTestCase>();
             var retryTests = FailedTestCaseConfiguration.ReadTodayFailedTests();
 
+            // Get Automation test case for my flow only.
+            retryTests = retryTests.Where(x => x.Flow == Name).ToList();
             Console.WriteLine("Failed test case found " + retryTests.Count);
+
             if (retryTests.Any())
             {
                 testResults.AddRange(
                 await _failedRunner.RunAsync(retryTests, automationContext));
             }
-            else
+            else if(automationContext.IsFirstRun)
             {
-
                 testResults.AddRange(
                 await _fullRunner.RunAsync(failedTestCases, automationContext));
             }

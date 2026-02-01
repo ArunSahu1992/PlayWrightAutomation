@@ -24,10 +24,10 @@ namespace Execution.AutomationFlow
             _flowResolver = flowResolver;
         }
 
-        public async Task<List<TestCaseResult>>  RunAsync(string flowName, IHostEnvironment _hostEnvironment)
+        public async Task<List<TestCaseResult>>  RunAsync(BaseContext  _baseContext)
         {
-            var context = _contextFactory.Create(flowName, _hostEnvironment);
-            var flow = _flowResolver.Resolve(flowName);
+            var context = _contextFactory.Create( _baseContext);
+            var flow = _flowResolver.Resolve(_baseContext.Flow);
 
             return await flow.ExecuteAsync(context);
         }

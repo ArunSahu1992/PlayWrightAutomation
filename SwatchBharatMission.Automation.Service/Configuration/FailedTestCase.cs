@@ -11,6 +11,7 @@ namespace Configuration
         public string City { get; set; } = string.Empty;
         public string TenantCode { get; set; } = string.Empty;
         public string TestName { get; set; } = string.Empty;
+        public string Flow { get; set; } = string.Empty;
 
         public DateTime CreatedDate { get; set; } = new DateTime().Date;
     }

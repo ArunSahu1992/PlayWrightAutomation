@@ -19,25 +19,35 @@ namespace Execution.Runner
         List<FailedTestCase> retryTests, AutomationContext automationContext)
         {
             var results = new List<TestCaseResult>();
+            var passedOne = new List<FailedTestCase>();
 
             foreach (var testCase in retryTests)
             {
                 var cityKey = automationContext.Cities[testCase.City];
                 automationContext.automationFlowSettings.TenantCode = testCase.TenantCode;
-                results.Add(
-                await _executor.ExecuteAsync(automationContext,
-                testCase.City,
-                testCase.TestName));
-            }
-            var failedTestCase = results.Where(x => x.IsPassed == false)?.Select(x => new Configuration.FailedTestCase()
-            {
-                TestName = x.TestCaseId,
-                City = retryTests.FirstOrDefault(p => p.TestName == x.TestCaseId)?.City,
-                TenantCode = retryTests.FirstOrDefault(p => p.TestName == x.TestCaseId)?.TenantCode
-            });
+                automationContext.automationFlowSettings.City = testCase.City;
 
-            if (failedTestCase.Any())
-                FailedTestCaseConfiguration.WriteFailedTests(failedTestCase.ToList());
+                var result = await _executor.ExecuteAsync(automationContext,
+                testCase.City,
+                testCase.TestName);
+
+                results.Add(result);
+
+                if (result.IsPassed)
+                {
+                    passedOne.Add(new FailedTestCase() { TestName = testCase.TestName, TenantCode = testCase.TenantCode });
+                }
+            }
+
+            // handle passed scenrio only.
+
+            if (!passedOne.Any()) return results;
+
+            var failedTCs = FailedTestCaseConfiguration.ReadTodayFailedTests();
+
+            failedTCs.RemoveAll(f => passedOne.Any(p => p.TestName == f.TestName && p.TenantCode == f.TenantCode));
+
+            FailedTestCaseConfiguration.WriteFailedTests(failedTCs);
 
             return results;
         }

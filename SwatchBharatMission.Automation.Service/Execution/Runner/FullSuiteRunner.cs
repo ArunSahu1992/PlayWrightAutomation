@@ -44,14 +44,16 @@ namespace Execution.Runner
                         {
                             City = city.City,
                             TestName = test.Key,
-                            TenantCode = city.TenantCode
+                            TenantCode = city.TenantCode,
+                            Flow = automationContext.FlowName
                         });
                     }
                 }
-                FailedTestCaseConfiguration.WriteFailedTests(failedTestCases);
+
+                var failedTCs = FailedTestCaseConfiguration.ReadTodayFailedTests();
+                failedTCs.AddRange(failedTestCases);
+                FailedTestCaseConfiguration.WriteFailedTests(failedTCs);
             }
-
-
             return results;
         }
     }

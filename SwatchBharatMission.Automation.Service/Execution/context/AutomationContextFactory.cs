@@ -15,16 +15,16 @@ namespace Execution.context
         }
 
 
-        public AutomationContext Create(string flowName, IHostEnvironment _hostEnvironment)
+        public AutomationContext Create(BaseContext  _baseContext )
         {
-            if (!_settings.Flows.TryGetValue(flowName, out var flow))
-                throw new InvalidOperationException($"Unknown flow: {flowName}");
+            if (!_settings.Flows.TryGetValue(_baseContext.Flow, out var flow))
+                throw new InvalidOperationException($"Unknown flow: {_baseContext.Flow}");
 
             if (!flow.Enabled)
                 throw new InvalidOperationException(
-                    $"Flow '{flowName}' is disabled via configuration");
+                    $"Flow '{_baseContext.Flow}' is disabled via configuration");
 
-            return new AutomationContext(flowName, flow, _hostEnvironment);
+            return new AutomationContext(flow, _baseContext);
         }
     }
 

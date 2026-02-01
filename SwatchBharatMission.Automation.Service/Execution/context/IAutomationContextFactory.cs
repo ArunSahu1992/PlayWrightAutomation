@@ -10,6 +10,6 @@ namespace Execution.context
 {
     public interface IAutomationContextFactory
     {
-        AutomationContext Create(string flowName, IHostEnvironment _hostEnvironment);
+        AutomationContext Create(BaseContext _baseContext);
     }
 }

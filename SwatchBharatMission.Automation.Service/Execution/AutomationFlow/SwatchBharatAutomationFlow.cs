@@ -28,18 +28,18 @@ namespace Execution.AutomationFlow
             var failedTestCases = new List<FailedTestCase>();
             var retryTests = FailedTestCaseConfiguration.ReadTodayFailedTests();
 
+            retryTests = retryTests.Where(x => x.Flow == Name).ToList();
+
             if (retryTests.Any())
             {
                 testResults.AddRange(
                 await _failedRunner.RunAsync(retryTests, automationContext));
             }
-            else
+            else if (automationContext.IsFirstRun)
             {
                 testResults.AddRange(
                 await _fullRunner.RunAsync(failedTestCases, automationContext));
             }
-
-            FailedTestCaseConfiguration.WriteFailedTests(failedTestCases);
             return testResults;
         }
 

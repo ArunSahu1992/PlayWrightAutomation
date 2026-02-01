@@ -1,10 +1,4 @@
-﻿using Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Hosting;
 
 namespace Configuration
@@ -12,32 +6,18 @@ namespace Configuration
     public sealed class AutomationContext
     {
         public string FlowName { get; }
+        public bool IsFirstRun { get; }
         private readonly IHostEnvironment _env;
         public AutomationFlowSettings automationFlowSettings;
-        public IHostEnvironment _hostEnvironment;
+        public string _appRootPath;
 
-
-        public AutomationContext(string flowName,AutomationFlowSettings settings, IHostEnvironment hostEnvironment)
+        public AutomationContext(AutomationFlowSettings settings, BaseContext _baseContext)
         {
-            FlowName = flowName;
+            FlowName = _baseContext.Flow;
             automationFlowSettings = settings;
-            _hostEnvironment = hostEnvironment;
+            _appRootPath = _baseContext.AppRootPath;
+            IsFirstRun = _baseContext.IsFirstRun;
         }
-
-        private void EnsureDirectories()
-        {
-            if (!Directory.Exists(automationFlowSettings.RegistryPath))
-            {
-                Directory.CreateDirectory(automationFlowSettings.RegistryPath);
-            }
-        }
-
-        // 🔹 Common helper paths
-        public string GetReportPath(string fileName)
-            => Path.Combine(automationFlowSettings.RegistryPath, fileName);
-
-        public string GetTempPath(string fileName)
-            => Path.Combine(Path.GetTempPath(), fileName);
 
         public Dictionary<string, UploadAutomationSettings> Cities
         {
@@ -50,8 +30,8 @@ namespace Configuration
         public Dictionary<string, UploadAutomationSettings> GetAllCityData(string flowName)
         {
             var folderPath = Path.Combine(
-                _hostEnvironment.ContentRootPath,
-                "settings",
+               _appRootPath,
+                Constants.SETTINGS_FOLDER,
                 flowName);
 
             Console.WriteLine("Folder Path " + folderPath);

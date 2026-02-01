@@ -3,7 +3,6 @@
   "UserName": "auto",
   "Password": "Auto#2026",
   "State": "Maharashtra",
-  "TenantCode": "solapur",
   "TestCases": {
     "TC_001_UploadCityDataToServer_MR_05": {
       "UploadApiUrl": "https://api.districtdashboard.in/api/importreport/swatchbharat/mr5"

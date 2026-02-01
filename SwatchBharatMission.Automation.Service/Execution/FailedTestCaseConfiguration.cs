@@ -10,23 +10,8 @@ namespace Execution
 {
     public class FailedTestCaseConfiguration
     {
-        private static string FailureDir = Path.Combine(GetPersistentPath(), "failed-tests");
+        private static string FailureDir = Path.Combine(Constants.GetPersistentPath(), Constants.FAILED_TEST_FOLDER);
 
-        public static string GetPersistentPath()
-        {
-            // 1️⃣ Try ApplicationData (Windows/macOS)
-            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            if (!string.IsNullOrWhiteSpace(appData))
-                return appData;
-
-            // 2️⃣ Linux fallback → HOME
-            var home = Environment.GetEnvironmentVariable("HOME");
-            if (!string.IsNullOrWhiteSpace(home))
-                return Path.Combine(home, ".config");
-
-            // 3️⃣ Last resort (CI-safe)
-            return "/tmp";
-        }
         public static List<FailedTestCase> ReadTodayFailedTests()
         {
             var path = GetCsvPath();
@@ -42,11 +27,10 @@ namespace Execution
                     TestName = p[0],
                     City = p[1],
                     TenantCode = p[2],
-                    CreatedDate = DateTime.Parse(p[3]).Date
+                    CreatedDate = DateTime.Parse(p[3]).Date,
+                    Flow = p[4],
                 };
             }).ToList().Where(x => x.CreatedDate == DateTime.Now.Date);
-
-            File.Delete(GetCsvPath());
 
             return res.ToList();
         }
@@ -73,12 +57,12 @@ namespace Execution
             try
             {
                 using var sw = new StreamWriter(CsvPath, false);
-                sw.WriteLine("TestCaseId,City,TenantCode,CreatedDate");
+                sw.WriteLine("TestCaseId,City,TenantCode,CreatedDate,flow");
 
                 foreach (var f in failed)
                 {
                     sw.WriteLine(
-                        $"{f.TestName},{f.City},{f.TenantCode},{DateTime.Now.Date}"
+                        $"{f.TestName},{f.City},{f.TenantCode},{DateTime.Now.Date},{f.Flow}"
                     );
                 }
             }

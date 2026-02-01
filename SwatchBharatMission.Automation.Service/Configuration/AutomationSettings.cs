@@ -24,10 +24,8 @@
     {
         public bool Enabled { get; set; }
         public string BaseUrl { get; set; } = string.Empty;
-        public string RegistryPath { get; set; } = string.Empty;
         public string TestCaseName { get; set; }
         public BaseSetting BaseSetting { get; set; }
-        public string jsonFolderName { get; set; }
         public string TestCaseId { get; set; }
         public string TenantCode { get; set; }
         public string City { get; set; }
