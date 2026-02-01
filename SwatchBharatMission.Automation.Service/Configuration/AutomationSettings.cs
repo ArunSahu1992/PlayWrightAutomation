@@ -30,6 +30,7 @@
         public string jsonFolderName { get; set; }
         public string TestCaseId { get; set; }
         public string TenantCode { get; set; }
+        public string City { get; set; }
         public string LoginEndpoint { get; set; }
         public int RetryCount { get; set; }
         public bool Headless { get; set; }

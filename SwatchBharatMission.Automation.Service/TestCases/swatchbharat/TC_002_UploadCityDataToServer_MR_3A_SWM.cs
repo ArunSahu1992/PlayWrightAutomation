@@ -30,7 +30,7 @@ namespace TestCases
             try
             {
                 string state = automationContext.automationFlowSettings.BaseSetting.State;
-                string city = automationContext.automationFlowSettings.TenantCode;
+                string city = automationContext.automationFlowSettings.City;
                 automationContext.automationFlowSettings.TestCaseName = GetType().Name;
 
                 // Navigate

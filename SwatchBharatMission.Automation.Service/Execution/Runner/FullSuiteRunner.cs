@@ -33,6 +33,7 @@ namespace Execution.Runner
                 foreach (var test in cityKey.TestCases)
                 {
                     automationContext.automationFlowSettings.TenantCode = city.TenantCode;
+                    automationContext.automationFlowSettings.City = city.City;
                     var result = await _executor.ExecuteAsync(automationContext,city.City, test.Key);
                     results.Add(result);
 

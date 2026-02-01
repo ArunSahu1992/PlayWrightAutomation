@@ -78,6 +78,7 @@ Log.Logger = new LoggerConfiguration()
         services.AddSingleton<ITestCase, TC_011_UploadCityDataToServer_MN_6_9>();
         services.AddSingleton<ITestCase, TC_012_UploadCityDataToServer_MN_18_4>();
         services.AddSingleton<ITestCase, TC_013_UploadCityDataToServer_MN_5_11>();
+        services.AddSingleton<ITestCase, TC_014_UploadCityDataToServer_MN_6_12>();
         services.AddSingleton<AutomationWorker>();
         services.AddSingleton<AutomationWorker>();
 
