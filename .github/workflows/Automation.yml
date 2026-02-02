@@ -19,28 +19,43 @@ jobs:
       - name: Start VM
         run: az vm start --resource-group PlayWrightAutomation-Resources --name playwright-vm-win
 
+      - name: Wait for runner online
+        run: |
+          echo "Waiting for self-hosted runner to come online..."
+          for i in {1..30}; do
+            STATUS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                    https://api.github.com/repos/${{ github.repository }}/actions/runners | jq -r '.runners[] | select(.name=="playwright-vm-win") | .status')
+            if [ "$STATUS" == "online" ]; then
+              echo "Runner is online"
+              exit 0
+            fi
+            echo "Waiting 10s..."
+            sleep 10
+          done
+          echo "Runner not online, exiting"
+          exit 1
+
   run-automation:
     needs: start-vm
-    runs-on: [self-hosted, windows] 
-     steps:
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0.x'
+    runs-on: [self-hosted, windows]
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20.x'
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
 
-    - name: Build project
-      run: |
-        dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln
-        dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln -c Release
+      - name: Build project
+        run: |
+          dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln
+          dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln -c Release
 
-
-    - name: Run Playwright Tests
-      run:  dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
+      - name: Run Playwright Tests
+        run: dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
 
   stop-vm:
     needs: run-automation
