@@ -20,11 +20,19 @@ jobs:
       with:
         node-version: '20.x'
 
-    - name: Build project
-      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
+    - name: Show working directory
       run: |
-        dotnet restore
-        dotnet build -c Release
+        echo Current directory:
+        cd
+        echo Workspace path:
+        echo %GITHUB_WORKSPACE%
+        echo Files:
+        dir
+
+    - name: Build project
+      run: |
+        dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln
+        dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln -c Release
 
     - name: Install Playwright browsers
       working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
