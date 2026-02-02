@@ -68,13 +68,17 @@ namespace TestCases
 
                         await page.WaitForLoadStateAsync(LoadState.Load);
 
+                        Console.WriteLine("Started Waiting for donwload");
                         var downloadTask = page.WaitForDownloadAsync(new()
                         {
                             Timeout = 180000 // 3 minutes
                         });
 
+
+                        Console.WriteLine("Comapleted Waitn for donwload");
+
                         await page.Locator("#ctl00_ContentPlaceHolder1_btnExcel")
-                            .ClickAsync(new() { Timeout = 60000 });
+                            .ClickAsync(new() { Timeout = 120000 });
 
                         var download = await downloadTask;
                         // Prepare temp directory
