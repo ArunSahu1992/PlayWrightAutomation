@@ -12,7 +12,7 @@ jobs:
     steps:
      # 4️⃣ Download code as ZIP artifact (bypass checkout issues)
     - name: Download repository artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: PlayWrightAutomation
         path: C:\Temp\PlayWrightAutomation
