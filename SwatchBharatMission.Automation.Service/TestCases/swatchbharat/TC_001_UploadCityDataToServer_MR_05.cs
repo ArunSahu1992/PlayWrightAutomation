@@ -67,11 +67,16 @@ namespace TestCases
                         await block.ClickAsync();
 
                         await page.WaitForLoadStateAsync(LoadState.Load);
-                        var download = await page.RunAndWaitForDownloadAsync(async () =>
+
+                        var downloadTask = page.WaitForDownloadAsync(new()
                         {
-                            await page.Locator("#ctl00_ContentPlaceHolder1_btnExcel").ClickAsync();
+                            Timeout = 180000 // 3 minutes
                         });
 
+                        await page.Locator("#ctl00_ContentPlaceHolder1_btnExcel")
+                            .ClickAsync(new() { Timeout = 60000 });
+
+                        var download = await downloadTask;
                         // Prepare temp directory
                         string tempDir = Path.Combine(Path.GetTempPath(), "AutomationFiles");
                         Directory.CreateDirectory(tempDir);
