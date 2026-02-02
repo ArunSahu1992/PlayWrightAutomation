@@ -1,0 +1,34 @@
+name: Run Playwright Automation on Windows
+
+on:
+  workflow_dispatch:  # manual trigger
+  schedule:
+    - cron: "0 0,6,12 * * 1"  # every Monday 12AM, 6AM, 12PM
+
+jobs:
+  run-playwright:
+    runs-on: [self-hosted]
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+
+    - name: Install Playwright browsers
+      run: |
+        dotnet tool restore
+        playwright install
+
+    - name: Run Playwright Tests
+      run: |
+        dotnet build
+        dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
