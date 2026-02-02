@@ -11,31 +11,8 @@ jobs:
 
     steps:
      # 4️⃣ Download code as ZIP artifact (bypass checkout issues)
-    - name: Download repository artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: PlayWrightAutomation
-        path: C:\Temp\PlayWrightAutomation
-
-    # 5️⃣ Extract ZIP safely using 7-Zip
-    - name: Extract ZIP safely
-      shell: pwsh
-      run: |
-        $zipFiles = Get-ChildItem -Path "C:\Temp\PlayWrightAutomation" -Filter "*.zip"
-        foreach ($zip in $zipFiles) {
-            $extractPath = "C:\Temp\PlayWrightAutomation\Extracted"
-            if (Test-Path $extractPath) { Remove-Item $extractPath -Recurse -Force -ErrorAction SilentlyContinue }
-            & "C:\Program Files\7-Zip\7z.exe" x $zip.FullName -o$extractPath -y
-            Write-Host "Extracted $($zip.Name) to $extractPath"
-        }
-
-    # 6️⃣ Run Playwright automation
-    - name: Run Playwright
-      shell: pwsh
-      run: |
-        cd C:\Temp\PlayWrightAutomation\Extracted
-        dotnet build
-        dotnet test
+    - name: Checkout repo
+      uses: actions/checkout@v4
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
