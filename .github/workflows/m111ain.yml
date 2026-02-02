@@ -25,6 +25,7 @@ jobs:
         node-version: '20.x'
 
     - name: Install Playwright browsers
+      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0
       run: |
         dotnet tool restore
         playwright install
