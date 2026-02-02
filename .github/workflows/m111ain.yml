@@ -34,13 +34,6 @@ jobs:
         dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln
         dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln -c Release
 
-    - name: Install Playwright browsers
-      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
-      run: |
-        dotnet tool restore
-        playwright install
 
     - name: Run Playwright Tests
-      run: |
-        dotnet build
-        dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
+      run:  dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
