@@ -31,7 +31,7 @@ jobs:
         dotnet build -c Release
 
     - name: Install Playwright browsers
-      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0
+      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
       run: |
         dotnet tool restore
         playwright install
