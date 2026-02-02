@@ -19,22 +19,6 @@ jobs:
       - name: Start VM
         run: az vm start --resource-group PlayWrightAutomation-Resources --name playwright-vm-win
 
-      - name: Wait for runner online
-        run: |
-          echo "Waiting for self-hosted runner to come online..."
-          for i in {1..30}; do
-            STATUS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                    https://api.github.com/repos/${{ github.repository }}/actions/runners | jq -r '.runners[] | select(.name=="playwright-vm-win") | .status')
-            if [ "$STATUS" == "online" ]; then
-              echo "Runner is online"
-              exit 0
-            fi
-            echo "Waiting 10s..."
-            sleep 10
-          done
-          echo "Runner not online, exiting"
-          exit 1
-
   run-automation:
     needs: start-vm
     runs-on: [self-hosted, windows]
