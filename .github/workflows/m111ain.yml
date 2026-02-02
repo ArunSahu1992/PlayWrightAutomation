@@ -24,6 +24,12 @@ jobs:
       with:
         node-version: '20.x'
 
+    - name: Build project
+      working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service
+      run: |
+        dotnet restore
+        dotnet build -c Release
+
     - name: Install Playwright browsers
       working-directory: SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/bin/Release/net8.0
       run: |
