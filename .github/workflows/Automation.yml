@@ -1,0 +1,59 @@
+name: Run automation using VM
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  start-vm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      - name: Start VM
+        run: az vm start --resource-group PlayWrightAutomation-Resources --name playwright-vm-win
+
+  run-automation:
+    needs: start-vm
+    runs-on: [self-hosted, windows] 
+     steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+
+    - name: Build project
+      run: |
+        dotnet restore SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln
+        dotnet build SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.sln -c Release
+
+
+    - name: Run Playwright Tests
+      run:  dotnet run --configuration Release --project SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service/SwatchBharatMission.Automation.Service.csproj
+
+  stop-vm:
+    needs: run-automation
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      - name: Stop VM
+        run: az vm deallocate --resource-group PlayWrightAutomation-Resources --name playwright-vm-win
