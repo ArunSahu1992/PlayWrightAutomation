@@ -1,7 +1,6 @@
 name: Run Playwright Automation
 
 on:
-  workflow_dispatch: # Manual trigger
   schedule:
       - cron: '25 1 * * *'
   
