@@ -17,7 +17,9 @@ namespace Configuration
                 return appData;
 
             // 2️⃣ Linux fallback → HOME
-            var home = Environment.GetEnvironmentVariable("HOME");
+                     var home = Environment.GetFolderPath(
+    Environment.SpecialFolder.ApplicationData
+);
             if (!string.IsNullOrWhiteSpace(home))
                 return Path.Combine(home, ".config");
 
