@@ -56,10 +56,11 @@ jobs:
       run: |
         pwsh -NoProfile -ExecutionPolicy Bypass -File ./playwright.ps1 install chromium
 
+
     - name: Locate Playwright browsers
       run: |
-        echo "Playwright cache:"
-        ls -R /home/runner/.cache/ms-playwright || true
+            echo "Playwright cache:"
+            ls -R $HOME/.cache/ms-playwright || true
         
     - name: List Playwright browser folder
       run: |
