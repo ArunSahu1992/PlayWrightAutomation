@@ -17,8 +17,8 @@ namespace TestCases
             var filesToUpload = new Dictionary<string, string>();
             await using var context = await PlaywrightFactory.CreateAsync(automationContext.automationFlowSettings.Headless);
             var page = context.Page;
-            page.SetDefaultTimeout(60000);           // 60 seconds
-            page.SetDefaultNavigationTimeout(60000);
+            page.SetDefaultTimeout(600000);           // 60 seconds
+            page.SetDefaultNavigationTimeout(600000);
             logger.LogInformation($"TestCase {TestCaseId} Started for : {automationContext.automationFlowSettings.TenantCode} ");
 
             try
