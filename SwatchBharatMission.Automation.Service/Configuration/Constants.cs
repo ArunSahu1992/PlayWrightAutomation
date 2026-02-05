@@ -20,8 +20,7 @@ namespace Configuration
                      var home = Environment.GetFolderPath(
     Environment.SpecialFolder.ApplicationData
 );
-            if (!string.IsNullOrWhiteSpace(home))
-                return Path.Combine(home, ".config");
+            
 
             // 3️⃣ Last resort (CI-safe)
             return "/tmp";
