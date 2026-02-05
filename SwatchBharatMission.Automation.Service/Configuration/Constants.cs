@@ -17,12 +17,15 @@ namespace Configuration
                 return appData;
 
             // 2️⃣ Linux fallback → HOME
-                     var home = Environment.GetFolderPath(
-    Environment.SpecialFolder.ApplicationData
-);
+            var home = Environment.GetEnvironmentVariable("HOME");
+
+            Console.WriteLine("My Home path " + home);
 
             if (!string.IsNullOrWhiteSpace(home))
+            {
+                Console.WriteLine("My Home path  inside if" + Path.Combine(home, ".config"));
                 return Path.Combine(home, ".config");
+            }
 
             // 3️⃣ Last resort (CI-safe)
             return "/tmp";
