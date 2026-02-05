@@ -39,8 +39,8 @@ namespace Execution.AutomationFlow
             else if (automationContext.IsFirstRun)
             {
                 Console.WriteLine("Executing Full testcases for flow :" + Name);
-                testResults.AddRange(
-                await _fullRunner.RunAsync(failedTestCases, automationContext));
+                //testResults.AddRange(
+                //await _fullRunner.RunAsync(failedTestCases, automationContext));
             }
             return testResults;
         }

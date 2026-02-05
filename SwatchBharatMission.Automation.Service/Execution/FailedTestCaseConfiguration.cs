@@ -16,6 +16,8 @@ namespace Execution
         {
             var path = GetCsvPath();
 
+            Console.WriteLine("Reading file for failed testcases from path :"+ path);
+
             if (!File.Exists(path))
                 return new();
 

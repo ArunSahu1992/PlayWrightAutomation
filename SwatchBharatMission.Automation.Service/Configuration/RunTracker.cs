@@ -30,15 +30,18 @@ namespace Configuration
             var today = DateTime.UtcNow.Date;
             var lines = File.ReadAllLines(_csvFilePath);
 
+            Console.WriteLine("CSV path for the FirstRunToday " + _csvFilePath);
+
             if (lines.Length <= 1) return true; // Only header exists
 
             var lastLine = lines[^1]; // Last row
             var parts = lastLine.Split(',');
             if (DateTime.TryParseExact(parts[0], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var lastDate))
             {
+                Console.WriteLine("FirstRunToday is already done today at ."+ lastDate);
                 return lastDate < today;
             }
-
+            Console.WriteLine("I am first run today");
             return true;
         }
 
